@@ -35,6 +35,6 @@ public class Block : MonoBehaviour
 
     public void MoveDown()
     {
-        moveTarget = startPos + new Vector3(0, -scale, 0);
+        moveTarget = startPos;
     }
 }

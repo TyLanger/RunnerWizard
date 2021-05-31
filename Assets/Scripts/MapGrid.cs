@@ -34,11 +34,14 @@ public class MapGrid : MonoBehaviour
     void GenerateGrid()
     {
         Vector3 bottomLeft = transform.position + new Vector3(spacing * -(width-1) / 2, 0, spacing * -(height-1) / 2);
+        Transform blockParent = new GameObject("Block Parent").transform;
+        blockParent.SetParent(transform);
+
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
-                Block copy = Instantiate(cube, bottomLeft + new Vector3(i*spacing, -spacing * 0.5f, j*spacing), transform.rotation, transform);
+                Block copy = Instantiate(cube, bottomLeft + new Vector3(i*spacing, -spacing * 0.5f, j*spacing), transform.rotation, blockParent);
                 copy.InitBlock(spacing);
                 grid[i, j] = copy;
                 gridActive[i, j] = false;
@@ -125,13 +128,55 @@ public class MapGrid : MonoBehaviour
         }
     }
 
-    public void MoveCircle(Vector3 center, int radius, bool up)
+    public void MoveCircle(Vector3 center, float radius, bool up)
     {
-        // from the center, move every block radius distance from it (4-connected)
-        // r=1 is a cross
-        // r=2 is a diamond
-        // r=3 is also a diamond. They're all diamonds
-        
-        // draw a circle. move any block 50% in the circle
+        // draw a circle. move any block wihtin radius distance from center
+
+        int xPos;
+        int zPos;
+        (xPos, zPos) = GetGridFromPos(center);
+        int roundRadius = Mathf.RoundToInt(radius);
+        int bottomLeftX = xPos - roundRadius;
+        int bottomLeftZ = zPos - roundRadius;
+
+        int boundingBoxSize = roundRadius * 2 + 1;
+
+        for (int i = 0; i < boundingBoxSize; i++)
+        {
+            for (int j = 0; j < boundingBoxSize; j++)
+            {
+                if ((bottomLeftX + i) >= 0 && (bottomLeftZ + j) >= 0 && (bottomLeftX + i) < width && (bottomLeftZ + j) < height)
+                {
+                    if (InsideCircle(xPos, zPos, bottomLeftX + i, bottomLeftZ + j, radius))
+                    {
+                        gridActive[bottomLeftX + i, bottomLeftZ + j] = up;
+
+                        if (up)
+                        {
+                            grid[bottomLeftX + i, bottomLeftZ + j].MoveUp();
+                        }
+                        else
+                        {
+                            grid[bottomLeftX + i, bottomLeftZ + j].MoveDown();
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bool InsideCircle(int centerX, int centerZ, int testX, int testZ, float radius)
+    {
+        radius *= spacing;
+
+        Vector3 center = grid[centerX, centerZ].transform.position;
+        Vector3 test = grid[testX, testZ].transform.position;
+
+        float dx = center.x - test.x;
+        float dz = center.z - test.z;
+
+        float distSquared = dx * dx + dz * dz;
+        return distSquared <= radius * radius;
     }
 }
