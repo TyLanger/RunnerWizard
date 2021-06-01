@@ -22,13 +22,8 @@ public class MapGrid : MonoBehaviour
         grid = new Block[width, height];
 
         GenerateGrid();
-        MoveUp(4, 6);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        MoveSquare(transform.position, width, true);
     }
 
     void GenerateGrid()
@@ -41,7 +36,7 @@ public class MapGrid : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                Block copy = Instantiate(cube, bottomLeft + new Vector3(i*spacing, -spacing * 0.5f, j*spacing), transform.rotation, blockParent);
+                Block copy = Instantiate(cube, bottomLeft + new Vector3(i*spacing, -spacing * 0.7f, j*spacing), transform.rotation, blockParent);
                 copy.InitBlock(spacing);
                 grid[i, j] = copy;
                 gridActive[i, j] = false;
