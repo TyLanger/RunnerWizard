@@ -10,20 +10,33 @@ public class Brain : MonoBehaviour
     protected Motor motor;
     public Transform player;
     protected NavMeshAgent agent;
+    public Gun gun;
 
     public StateMachine stateMachine;
+    public string CurrentStateName;
+    protected bool dead = false;
 
+    NavMeshPath path;
 
     protected virtual void Awake()
     {
         motor = GetComponent<Motor>();
         agent = GetComponent<NavMeshAgent>();
+        Health h = GetComponent<Health>();
+        if(h)
+        {
+            h.OnDeath += Die;
+        }
+
+        path = new NavMeshPath();
+        agent.CalculatePath(transform.position, path);
 
         StateMachineSetup();
     }
 
     protected virtual void Update()
     {
+        CurrentStateName = $"{stateMachine.GetCurrentStateName()}";
         stateMachine?.Tick();
     }
 
@@ -42,12 +55,22 @@ public class Brain : MonoBehaviour
 
     public void PathToPlayer()
     {
-        SetDestination(player.position);
+        if (!agent.pathPending)
+        {
+            SetDestination(player.position);
+        }
     }
 
     public void SetDestination(Vector3 destination)
     {
-        agent.SetDestination(destination);
+        agent.CalculatePath(destination, path);
+        agent.SetPath(path);
+        
+    }
+
+    public void StopPathing()
+    {
+        agent.isStopped = true;
     }
 
     public Vector3 GetPlayerPos()
@@ -57,8 +80,7 @@ public class Brain : MonoBehaviour
 
     public bool CanSeePlayer()
     {
-        // see through other enemies
-        int layerMask = ~(1 << LayerMask.NameToLayer("Enemy"));
+        // vision blocked by blocks or the player. See through other enemies
         int playerAndBlockLayer = (1 << (LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Block")));
 
         if(Physics.Raycast(transform.position, player.position - transform.position, out RaycastHit hitInfo, 100, playerAndBlockLayer))
@@ -70,5 +92,21 @@ public class Brain : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void Aim(Vector3 worldLookPoint)
+    {
+        gun.transform.LookAt(worldLookPoint);
+    }
+
+    public void Shoot()
+    {
+        gun.Fire();
+    }
+
+    void Die(GameObject go)
+    {
+        dead = true;
+        stateMachine.SetState(new Death(this));
     }
 }

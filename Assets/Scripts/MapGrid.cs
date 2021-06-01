@@ -23,6 +23,7 @@ public class MapGrid : MonoBehaviour
 
         GenerateGrid();
 
+        //StartCoroutine(SetupStart());
         MoveSquare(transform.position, width, true);
     }
 
@@ -57,6 +58,15 @@ public class MapGrid : MonoBehaviour
         int zPos = Mathf.RoundToInt(diff.z / spacing);
 
         return (xPos, zPos);
+    }
+
+    IEnumerator SetupStart()
+    {
+        for (int i = 0; i < width; i++)
+        {
+            MoveSquare(transform.position, i, true);
+            yield return null;
+        }
     }
 
     public void MoveSquare(Vector3 position, int size, bool up)

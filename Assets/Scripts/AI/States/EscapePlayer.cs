@@ -12,11 +12,9 @@ public class EscapePlayer : IState
         myBrain = brain;
     }
 
-
-
     public void OnEnter()
     {
-       
+        
     }
 
     public void OnExit()
@@ -26,8 +24,8 @@ public class EscapePlayer : IState
 
     public void Tick()
     {
-        Vector3 awayFromPlayer = myBrain.transform.position - myBrain.GetPlayerPos();
-
+        Vector3 awayFromPlayer = (myBrain.transform.position - myBrain.GetPlayerPos()).normalized;
         myBrain.SetDestination(myBrain.transform.position + awayFromPlayer * 10);
+
     }
 }

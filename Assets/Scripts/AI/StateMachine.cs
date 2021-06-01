@@ -20,5 +20,10 @@ public class StateMachine
         currentState = state;
         currentState?.OnEnter();
     }
+
+    public string GetCurrentStateName()
+    {
+        return currentState.GetType().ToString();
+    }
     
 }

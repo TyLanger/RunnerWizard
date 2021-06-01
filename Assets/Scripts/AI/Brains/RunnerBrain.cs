@@ -25,15 +25,21 @@ public class RunnerBrain : Brain
 
 
     Vector3 spawnPos;
-    float timeBetweenSwaps = 5;
-    float timeOfNextMove = 0;
 
     float playerRadius = 7; // how far you want to be away from the player
 
     MapGrid map;
+    Vector3 recentRoomCenter;
+    float recentRoomRadius;
+
+
     public Brain chaserPrefab;
     int numMinions = 3;
     float minionSpacing = 5;
+
+    public float distBehindMinion = 15;
+
+    List<Transform> minions;
 
     // Start is called before the first frame update
     protected override void Awake()
@@ -41,6 +47,7 @@ public class RunnerBrain : Brain
         base.Awake();
 
         map = FindObjectOfType<MapGrid>();
+        minions = new List<Transform>();
 
         spawnPos = transform.position;
         stateMachine.SetState(new CreateRoom(this));
@@ -49,21 +56,33 @@ public class RunnerBrain : Brain
     protected override void Update()
     {
         base.Update();
-        if (Vector3.Distance(player.position, transform.position) < playerRadius && CanSeePlayer())
+        if (!dead)
         {
+            if (minions.Count > 0)
+            {
+                stateMachine.SetState(new HideBehindMinion(this));
+            }
+            /*
+            else
+            {
 
-            stateMachine.SetState(new EscapePlayer(this));
+                if (Vector3.Distance(player.position, transform.position) < playerRadius && CanSeePlayer())
+                {
 
-        }
-        else
-        {
-            stateMachine.SetState(new Idle(this));
+                    stateMachine.SetState(new EscapePlayer(this));
+
+                }
+                else
+                {
+                    stateMachine.SetState(new Idle(this));
+                }
+            }
+            */
         }
     }
 
     public void SpawnMinions()
     {
-        Debug.Log("Spawning minions");
         StartCoroutine(CreateMinions());
     }
 
@@ -80,6 +99,13 @@ public class RunnerBrain : Brain
         {
             Brain copy = Instantiate(chaserPrefab, midPoint + perpLine * (i-(numMinions/2))*minionSpacing, Quaternion.identity);
             copy.player = player;
+            Health h = copy.GetComponent<Health>();
+            if (h)
+            {
+                h.OnDeath += MinionDeath;
+            }
+            minions.Add(copy.transform);
+            
         }
     }
 
@@ -91,8 +117,59 @@ public class RunnerBrain : Brain
     IEnumerator CarveRoom()
     {
         yield return null;
-        map.MoveCircle(transform.position, 6.5f, false);
+        float radius = 6.5f;
+        map.MoveCircle(transform.position, radius, false);
+        recentRoomCenter = transform.position;
+        recentRoomRadius = radius;
 
+    }
+
+    public Vector3 GetPointBehindMinion()
+    {
+        Vector3 closestPoint = transform.position;
+        float closestDist = Mathf.Infinity;
+
+        for (int i = 0; i < minions.Count; i++)
+        {
+
+            Vector3 playerToMinion = minions[i].position - player.position;
+            Vector3 pointBehind = minions[i].position + playerToMinion.normalized * distBehindMinion;
+
+            float dist = Vector3.Distance(transform.position, pointBehind);
+
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closestPoint = pointBehind;
+            }
+
+        }
+
+        return closestPoint;
+    }
+
+    public (Vector3 position, Vector3 lookPoint) GetWallBreachPoint()
+    {
+        Vector3 mapCenter = map.transform.position;
+        Vector3 mapCenterDir = mapCenter - recentRoomCenter;
+
+        // radius is in blocks. Multiply by spacing to get real distance
+        Vector3 position = recentRoomCenter + mapCenterDir.normalized * recentRoomRadius * map.spacing;
+        Vector3 lookPoint = new Vector3(mapCenter.x, transform.position.y, mapCenter.z);
+
+        return (position, lookPoint);
+    }
+
+    void MinionDeath(GameObject minion)
+    {
+        minions.Remove(minion.transform);
+        if(minions.Count == 0)
+        {
+            // all minions dead
+            Debug.Log("All minions dead");
+            stateMachine.SetState(new DigTunnel(this));
+
+        }
     }
 
 }

@@ -13,14 +13,16 @@ public class ChaserBrain : Brain
     protected override void Update()
     {
         base.Update();
-
-        if(CanSeePlayer())
+        if (!dead)
         {
-            stateMachine.SetState(new Chase(this));
-        }
-        else
-        {
-            stateMachine.SetState(new Idle(this));
+            if (CanSeePlayer())
+            {
+                stateMachine.SetState(new Chase(this));
+            }
+            else
+            {
+                stateMachine.SetState(new Idle(this));
+            }
         }
     }
 }

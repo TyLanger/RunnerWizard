@@ -21,13 +21,18 @@ public class Bullet : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, moveSpeed * Time.fixedDeltaTime);
     }
 
-    void DestroyThis()
+    protected void DestroyThis()
     {
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter(Collider other)
+    public virtual void OnTriggerEnter(Collider other)
     {
-        
+        Health h = other.gameObject.GetComponent<Health>();
+        if (h != null)
+        {
+            h.TakeDamage(damage);
+            DestroyThis();
+        }
     }
 }
