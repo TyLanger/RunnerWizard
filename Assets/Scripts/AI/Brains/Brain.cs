@@ -11,6 +11,7 @@ public class Brain : MonoBehaviour
     public Transform player;
     protected NavMeshAgent agent;
     public Gun gun;
+    protected CameraFollow cam;
 
     public StateMachine stateMachine;
     public string CurrentStateName;
@@ -22,6 +23,8 @@ public class Brain : MonoBehaviour
     {
         motor = GetComponent<Motor>();
         agent = GetComponent<NavMeshAgent>();
+        cam = FindObjectOfType<CameraFollow>();
+
         Health h = GetComponent<Health>();
         if(h)
         {

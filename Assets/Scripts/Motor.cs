@@ -17,6 +17,13 @@ public class Motor : MonoBehaviour
     public ParticleSystem runDustParticles;
     public float dustSpeed = 15;
 
+    Rigidbody rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,8 +38,7 @@ public class Motor : MonoBehaviour
     {
         float dot = Vector3.Dot(momentumDir, moveDir);
         float lookDot = Vector3.Dot(transform.forward, moveDir);
-        //Debug.DrawRay(transform.position, moveDir, Color.red);
-        //Debug.DrawRay(transform.position, momentumDir*3, (dot>0.98f)?Color.green:Color.blue);
+
 
         // move faster if you continue in the same direction, but not slower when swapping direction
         float momentumMultiplier = (1 + Ease.SmoothStep(Mathf.Clamp((dot), 0, 1f)));
@@ -58,14 +64,28 @@ public class Motor : MonoBehaviour
 
         if (motorMovement)
         {
-            transform.position = Vector3.MoveTowards(transform.position, transform.position + moveDir, currentSpeed * Time.fixedDeltaTime);
+
+            // 5(blockSize)/2 = 2.5
+            // 2/5 /0.2(fixedDeltaTime) = 12.5
+            // when going faster than 12.5, you can move to the far side of the block
+            // and then physics pushes you out that way I think
+            if (currentSpeed > 12)
+            {
+                int blockLayer = (1 << LayerMask.NameToLayer("Block") | 1 << LayerMask.NameToLayer("BulletPassThrough"));
+                // check if a wall is nearby. Don't go through it
+                if (Physics.Raycast(transform.position, transform.position + moveDir, out RaycastHit hit, currentSpeed * Time.fixedDeltaTime, blockLayer))
+                {
+                    if (hit.distance < currentSpeed * Time.fixedDeltaTime)
+                    {
+                        currentSpeed = (hit.distance - 0.1f) / Time.fixedDeltaTime;
+                    }
+                }
+            }
+
+            rb.MovePosition(rb.position + (moveDir *currentSpeed * Time.fixedDeltaTime));
         }
 
         momentumDir = Vector3.Lerp(momentumDir, moveDir, 0.08f);
-
-        //momentumDir += moveDir;
-        //momentumDir *= 0.5f;
-        //Debug.Log($"Dot: {dot}");
     }
 
     public void MoveTo(Vector3 direction)

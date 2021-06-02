@@ -43,6 +43,10 @@ public class RunnerBrain : Brain
 
     int quadsVisited = 0;
 
+    public Rule ruleToSpawn;
+    public ChainController chain;
+    public Rule blockerRule;
+
     // Start is called before the first frame update
     protected override void Awake()
     {
@@ -53,6 +57,8 @@ public class RunnerBrain : Brain
 
         spawnPos = transform.position;
         stateMachine.SetState(new CreateRoom(this));
+
+        CreateRule(ruleToSpawn);
     }
 
     protected override void Update()
@@ -83,6 +89,42 @@ public class RunnerBrain : Brain
         }
     }
 
+    public void CreateRule(Rule rule)
+    {
+        // pick a rule
+        // spawn it behind me
+        Rule copy = Instantiate(rule, transform.position + Vector3.back * 2f, transform.rotation);
+        ChainController chainCopy = Instantiate(chain, transform.position + Vector3.back, transform.rotation);
+
+        chainCopy.SetTargets(transform, copy.transform);
+        copy.SetChain(chainCopy);
+        copy.SetTetherTarget(transform);
+    }
+
+    public void CreateRule(Rule rule, Vector3 anchorA, Vector3 anchorB)
+    {
+        Rule copy = Instantiate(rule, transform.position + Vector3.back * 2f, transform.rotation);
+        ChainController chainCopy = Instantiate(chain, transform.position + Vector3.back, transform.rotation);
+
+        chainCopy.SetPoints(anchorA, anchorB);
+        copy.SetChain(chainCopy);
+        copy.SetTetherTarget(chainCopy.transform); // will this cause them to move around?
+    }
+
+    public void CreateBlockRule(Vector3 spawnPoint, Vector3 forward)
+    {
+        Rule r = Instantiate(blockerRule, spawnPoint, transform.rotation);
+        ChainController chainCopy = Instantiate(chain, spawnPoint, transform.rotation);
+
+        r.transform.localScale = Vector3.one * 20;
+        r.transform.forward = forward;
+
+        chainCopy.SetPoints(r.transform.position + 3*r.transform.right, r.transform.position + -3*r.transform.right);
+        r.SetChain(chainCopy);
+        r.SetTetherTarget(chainCopy.transform);
+        chainCopy.GetComponent<Health>().maxHealth = 10;
+    }
+
     public void SpawnMinions()
     {
         StartCoroutine(CreateMinions());
@@ -97,9 +139,11 @@ public class RunnerBrain : Brain
         Vector3 perpLine = transform.position - player.position;
         perpLine = new Vector3(-perpLine.z, perpLine.y, perpLine.x).normalized;
 
-        for (int i = 0; i < numMinions; i++)
+        int minionsToSpawn = numMinions + quadsVisited;
+
+        for (int i = 0; i < minionsToSpawn; i++)
         {
-            Brain copy = Instantiate(chaserPrefab, midPoint + perpLine * (i-(numMinions/2))*minionSpacing, Quaternion.identity);
+            Brain copy = Instantiate(chaserPrefab, midPoint + perpLine * (i-(minionsToSpawn/2))*minionSpacing, Quaternion.identity);
             copy.player = player;
             Health h = copy.GetComponent<Health>();
             if (h)
@@ -219,10 +263,10 @@ public class RunnerBrain : Brain
     void MinionDeath(GameObject minion)
     {
         minions.Remove(minion.transform);
-        if(minions.Count == 0)
+        if(minions.Count < 2)
         {
             // all minions dead
-            Debug.Log("All minions dead");
+            //Debug.Log("All minions dead");
             stateMachine.SetState(new DigTunnel(this));
 
         }

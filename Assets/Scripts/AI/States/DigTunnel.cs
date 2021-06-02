@@ -39,6 +39,11 @@ public class DigTunnel : IState
                 //Debug.Log($"Move to {destination}");
                 //Debug.DrawLine(myBrain.transform.position, destination, Color.cyan, 30);
 
+                // create a block so the player can't follow so quickly
+                Vector3 toCenterDir = (lookPoint - breachPoint).normalized;
+                // *2 put the block a bit into where the tunnel will be
+                b.CreateBlockRule(breachPoint + toCenterDir * 2, toCenterDir);
+
                 myBrain.gun.OnBulletEnded += BulletEnded;
                 Bullet bullet = myBrain.gun.bullet;
                 if(bullet.GetType() == typeof(DiggerBullet))

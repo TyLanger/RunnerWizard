@@ -18,6 +18,7 @@ public class ChaserBrain : Brain
     public float backToRestTime = 1;
     bool smashing = false;
 
+
     protected override void Awake()
     {
         base.Awake();
@@ -77,7 +78,7 @@ public class ChaserBrain : Brain
         }
 
         motor.moveSpeed = restSpeed;
-        FindObjectOfType<CameraFollow>().AddShake(0.3f);
+        cam.AddShake(0.3f);
         yield return new WaitForSeconds(smashHoldTime);
         weapon.GetComponent<Collider>().enabled = false;
 

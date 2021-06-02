@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7881778714876307306}
   - component: {fileID: 7529046959240197095}
   - component: {fileID: 6786833942508734779}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: DiggerBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}

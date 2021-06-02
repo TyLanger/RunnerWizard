@@ -25,7 +25,7 @@ public class RadiusIndicator : MonoBehaviour
         CreatePoints();
     }
 
-    void CreatePoints()
+    public void CreatePoints()
     {
         float x;
         float z;
