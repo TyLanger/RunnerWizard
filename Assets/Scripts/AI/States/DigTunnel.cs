@@ -35,9 +35,10 @@ public class DigTunnel : IState
                 (breachPoint, lookPoint) = b.GetWallBreachPoint();
                 destination = breachPoint;
                 destFound = true; // so not using null vector in Tick. Is OnEnter guarenteed to run before tick?
+                myBrain.SetDestination(destination);
                 //b.SetDestination(destination);
                 //Debug.Log($"Move to {destination}");
-                //Debug.DrawLine(myBrain.transform.position, destination, Color.cyan, 30);
+                Debug.DrawLine(myBrain.transform.position, destination, Color.red, 30);
 
                 // create a block so the player can't follow so quickly
                 Vector3 toCenterDir = (lookPoint - breachPoint).normalized;
@@ -65,14 +66,7 @@ public class DigTunnel : IState
     public void Tick()
     {
         //Debug.Log($"Has shot: {hasShot} Dest found: {destFound}");
-        if (hasShot)
-        {
-            // you're not facing where you just shot
-            //myBrain.SetDestination(myBrain.transform.position + myBrain.transform.forward * 2);
-            // how do I tell when the bullet reached the end?
-            // should I shoot again? Or make a room?
-        }
-        else
+        if (!hasShot)
         {
             if (destFound)
             {
@@ -80,15 +74,10 @@ public class DigTunnel : IState
 
                 if (Vector3.Distance(destination, myBrain.transform.position) < shootingRange)
                 {
-
-
                     myBrain.Aim(lookPoint);
                     hasShot = true;
                     myBrain.Shoot();
-                    // follow the bullet into the tunnel
-                    // setDest forward + a bit?
-                    // setDest bullet?
-
+                    myBrain.SetDestination(myBrain.transform.position);
                 }
             }
         }
@@ -103,10 +92,12 @@ public class DigTunnel : IState
 
     void BulletEnded(Vector3 position)
     {
+        Debug.Log("Bullet Ended");
         Debug.DrawLine(myBrain.transform.position, position, Color.blue, 20);
         //myBrain.SetDestination(position);
         hasShot = false; // get ready for a second shot
         destination = position;
+        myBrain.SetDestination(destination);
         //lookPoint = GetAimPoint();// new Vector3(centerOfNewQuad.x, myBrain.transform.position.y, centerOfNewQuad.z);
         lookPoint = GetAimPointForZigZag();
     }

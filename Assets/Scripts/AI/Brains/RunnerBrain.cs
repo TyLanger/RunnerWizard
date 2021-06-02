@@ -202,9 +202,9 @@ public class RunnerBrain : Brain
         Vector3 mapCenterDir = mapCenter - recentRoomCenter;
 
         // radius is in blocks. Multiply by spacing to get real distance
-        Vector3 position = recentRoomCenter + mapCenterDir.normalized * recentRoomRadius * map.spacing * 0.8f;
+        Vector3 position = recentRoomCenter + mapCenterDir.normalized * recentRoomRadius * map.spacing * 0.7f;
         Vector3 lookPoint = new Vector3(mapCenter.x, transform.position.y, mapCenter.z);
-
+        
         return (position, lookPoint);
     }
 

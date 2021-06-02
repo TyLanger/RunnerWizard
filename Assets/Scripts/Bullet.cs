@@ -29,11 +29,14 @@ public class Bullet : MonoBehaviour
 
     protected void DestroyThis()
     {
-        OnEnd?.Invoke(transform.position);
-        inCleanup = true;
-        // doing this so the particles have a chance to play
-        moveSpeed = 0;
-        Invoke("Cleanup", 0.15f);
+        if (!inCleanup)
+        {
+            OnEnd?.Invoke(transform.position);
+            inCleanup = true;
+            // doing this so the particles have a chance to play
+            moveSpeed = 0;
+            Invoke("Cleanup", 0.15f);
+        }
     }
 
     void Cleanup()

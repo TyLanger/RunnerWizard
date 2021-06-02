@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Health : MonoBehaviour, IRuleable
 {
@@ -17,6 +18,10 @@ public class Health : MonoBehaviour, IRuleable
     bool isPlayer = false;
     CameraFollow cam;
 
+    public GameObject healthBarPrefab;
+    public Vector3 hpBarOffset;
+    GameObject healthBar;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,12 +32,17 @@ public class Health : MonoBehaviour, IRuleable
             isPlayer = true;
             cam = FindObjectOfType<CameraFollow>();
         }
+        healthBar = Instantiate(healthBarPrefab, transform.position + hpBarOffset, transform.rotation);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (!dead)
+        {
+            healthBar.transform.position = transform.position + hpBarOffset;
+        }
     }
 
     public void TakeDamage(int damage)
@@ -53,6 +63,8 @@ public class Health : MonoBehaviour, IRuleable
                 cam.AddShake(3* damage / maxHealth);
             }
             currentHealth -= damage;
+            Slider s = healthBar.GetComponentInChildren<Slider>();
+            s.value = Mathf.Clamp01(((float)currentHealth / maxHealth));
             if (currentHealth <= 0)
             {
                 Die();
@@ -63,6 +75,7 @@ public class Health : MonoBehaviour, IRuleable
     void Die()
     {
         dead = true;
+        Destroy(healthBar);
         OnDeath?.Invoke(gameObject);
     }
 
