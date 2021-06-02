@@ -257,7 +257,7 @@ MonoBehaviour:
   player: {fileID: 1068407439}
   speed: 1.8
   trauma: 0
-  traumaDecay: 0.02
+  traumaDecay: 0.017
   maxShake: 0.4
 --- !u!1 &18180426
 GameObject:
@@ -11365,10 +11365,6 @@ PrefabInstance:
     - target: {fileID: 2130875519008734749, guid: 371bfebc0f1ebba49a70750e31006748, type: 3}
       propertyPath: m_Name
       value: Chaser
-      objectReference: {fileID: 0}
-    - target: {fileID: 2130875519008734749, guid: 371bfebc0f1ebba49a70750e31006748, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2130875519008734751, guid: 371bfebc0f1ebba49a70750e31006748, type: 3}
       propertyPath: player

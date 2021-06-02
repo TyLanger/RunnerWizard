@@ -14,10 +14,19 @@ public class Health : MonoBehaviour, IRuleable
 
     bool isProtected = false;
 
+    bool isPlayer = false;
+    CameraFollow cam;
+
     // Start is called before the first frame update
     void Start()
     {
         currentHealth = maxHealth;
+        PlayerInput p = GetComponent<PlayerInput>();
+        if(p)
+        {
+            isPlayer = true;
+            cam = FindObjectOfType<CameraFollow>();
+        }
     }
 
     // Update is called once per frame
@@ -36,8 +45,12 @@ public class Health : MonoBehaviour, IRuleable
                 {
                     // don't turn 1 damage to 0
                     // also don't turn 0 damage to 1
-                    damage = Math.Min(1, damage / 2);
+                    damage = Math.Max(1, damage / 2);
                 }
+            }
+            if(isPlayer)
+            {
+                cam.AddShake(3* damage / maxHealth);
             }
             currentHealth -= damage;
             if (currentHealth <= 0)
