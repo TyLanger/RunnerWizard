@@ -20,7 +20,7 @@ public class DiggerBullet : Bullet
         if(Vector3.Distance(spawnPos, transform.position) > travelDist)
         {
             grid.MoveCircle(transform.position, digRadius, false); // one last smash in case you're close to a wall
-            Debug.Log("Went the distance");
+            //Debug.Log("Went the distance");
             DestroyThis();
         }
     }

@@ -184,4 +184,27 @@ public class MapGrid : MonoBehaviour
         float distSquared = dx * dx + dz * dz;
         return distSquared <= radius * radius;
     }
+
+    public Vector3 GetQuadrantCenter(bool right, bool top)
+    {
+        int xOffset = 0;
+        int zOffset = 0;
+        if(right)
+        {
+            xOffset += width / 2;
+        }
+        if(top)
+        {
+            zOffset += height / 2;
+        }
+
+        // gives the bottom left block of the quad
+        //Vector3 bottomLeft = grid[xOffset, zOffset].transform.position;
+
+        xOffset += width / 4;
+        zOffset += height / 4;
+
+        Vector3 centerOfQuad = grid[xOffset, zOffset].transform.position;
+        return centerOfQuad;
+    }
 }

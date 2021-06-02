@@ -41,6 +41,8 @@ public class RunnerBrain : Brain
 
     List<Transform> minions;
 
+    int quadsVisited = 0;
+
     // Start is called before the first frame update
     protected override void Awake()
     {
@@ -60,7 +62,7 @@ public class RunnerBrain : Brain
         {
             if (minions.Count > 0)
             {
-                stateMachine.SetState(new HideBehindMinion(this));
+                //stateMachine.SetState(new HideBehindMinion(this));
             }
             /*
             else
@@ -107,6 +109,8 @@ public class RunnerBrain : Brain
             minions.Add(copy.transform);
             
         }
+
+        stateMachine.SetState(new HideBehindMinion(this));
     }
 
     public void SpawnRoom()
@@ -117,7 +121,7 @@ public class RunnerBrain : Brain
     IEnumerator CarveRoom()
     {
         yield return null;
-        float radius = 6.5f;
+        float radius = 5.5f;
         map.MoveCircle(transform.position, radius, false);
         recentRoomCenter = transform.position;
         recentRoomRadius = radius;
@@ -154,10 +158,62 @@ public class RunnerBrain : Brain
         Vector3 mapCenterDir = mapCenter - recentRoomCenter;
 
         // radius is in blocks. Multiply by spacing to get real distance
-        Vector3 position = recentRoomCenter + mapCenterDir.normalized * recentRoomRadius * map.spacing;
+        Vector3 position = recentRoomCenter + mapCenterDir.normalized * recentRoomRadius * map.spacing * 0.8f;
         Vector3 lookPoint = new Vector3(mapCenter.x, transform.position.y, mapCenter.z);
 
         return (position, lookPoint);
+    }
+
+    public Vector3 GetNewQuadrant()
+    {
+        // use my position to figure out my quad
+        // split the map into 4 quads.
+        // tunnel to another one
+
+        Vector3 mapCenter = map.transform.position;
+        Vector3 mapCenterDir = mapCenter - transform.position;
+
+        // if mapCenterDir.x < 0, on the right
+        // if mapCenterDir.z < 0, on the top
+
+        bool right = mapCenterDir.x < 0;
+        bool top = mapCenterDir.z < 0;
+
+        // could have done evens, swap right, else swap top
+        // this is probably clearer
+        switch(quadsVisited)
+        {
+            case 0:
+                right = !right; // bottom right to bottom left
+                break;
+
+            case 1:
+                top = !top; // bottom left tot top left
+                break;
+
+            case 2:
+                right = !right; // top left to top right
+                break;
+
+        }
+        quadsVisited++;
+
+
+        Vector3 centerOfNewQuad = map.GetQuadrantCenter(right, top);
+        return centerOfNewQuad;
+    }
+
+    public override void Shoot()
+    {
+        base.Shoot();
+        //gun.OnBulletEnded += BulletEnded;
+    }
+
+    void BulletEnded(Vector3 position)
+    {
+        gun.OnBulletEnded -= BulletEnded;
+        SetDestination(position);
+        stateMachine.SetState(new FollowTunnel(this));
     }
 
     void MinionDeath(GameObject minion)

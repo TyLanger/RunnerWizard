@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    public static float moveSpeed = 5;
+    public static float moveSpeed = 10;
     Vector3 moveTarget;
     float scale =1;
 

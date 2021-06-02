@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
+    public event System.Action<Vector3> OnBulletEnded;
+
     public Bullet bullet;
     int clipSize = 30;
     int currentBullets = 0;
@@ -35,6 +37,7 @@ public class Gun : MonoBehaviour
             timeOfNextShot = Time.time + timeBetweenShots;
             currentBullets--;
             Bullet copy = Instantiate(bullet, muzzlePoint.position, transform.rotation);
+            copy.OnEnd += BulletEnded;
             //copy.transform.forward = transform.forward;
         }
     }
@@ -58,5 +61,11 @@ public class Gun : MonoBehaviour
         yield return new WaitForSeconds(reloadTime);
         currentBullets = clipSize;
         currentlyReloading = false;
+    }
+
+    void BulletEnded(Vector3 position)
+    {
+        // should I be propogating events like this?
+        OnBulletEnded?.Invoke(position);
     }
 }

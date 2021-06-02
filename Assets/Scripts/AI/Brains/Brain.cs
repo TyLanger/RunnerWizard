@@ -96,10 +96,11 @@ public class Brain : MonoBehaviour
 
     public void Aim(Vector3 worldLookPoint)
     {
-        gun.transform.LookAt(worldLookPoint);
+        transform.LookAt(new Vector3(worldLookPoint.x, transform.position.y, worldLookPoint.z));
+        //gun.transform.LookAt(new Vector3(worldLookPoint.x, gun.transform.position.y, worldLookPoint.z));
     }
 
-    public void Shoot()
+    public virtual void Shoot()
     {
         gun.Fire();
     }
