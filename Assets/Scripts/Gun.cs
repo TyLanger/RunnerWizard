@@ -18,9 +18,12 @@ public class Gun : MonoBehaviour
 
     public Transform muzzlePoint;
 
+    public ParticleSystem muzzleFlashParticles;
+
     // Start is called before the first frame update
     void Start()
     {
+        muzzleFlashParticles = GetComponentInChildren<ParticleSystem>();
         Reload();
     }
 
@@ -38,6 +41,10 @@ public class Gun : MonoBehaviour
             currentBullets--;
             Bullet copy = Instantiate(bullet, muzzlePoint.position, transform.rotation);
             copy.OnEnd += BulletEnded;
+            if(muzzleFlashParticles)
+            {
+                muzzleFlashParticles.Play();
+            }
             //copy.transform.forward = transform.forward;
         }
     }

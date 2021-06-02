@@ -12,8 +12,12 @@ public class Bullet : MonoBehaviour
 
     public float lifetime = 10;
 
+    public ParticleSystem impactParticles;
+    bool inCleanup = false;
+
     private void Start()
     {
+        //impactParticles = GetComponentInChildren<ParticleSystem>();
         Invoke("DestroyThis", lifetime);
     }
 
@@ -26,16 +30,32 @@ public class Bullet : MonoBehaviour
     protected void DestroyThis()
     {
         OnEnd?.Invoke(transform.position);
+        inCleanup = true;
+        // doing this so the particles have a chance to play
+        moveSpeed = 0;
+        Invoke("Cleanup", 0.15f);
+    }
+
+    void Cleanup()
+    {
         Destroy(gameObject);
     }
 
     public virtual void OnTriggerEnter(Collider other)
     {
-        Health h = other.gameObject.GetComponent<Health>();
-        if (h != null)
+        if (!inCleanup)
         {
-            h.TakeDamage(damage);
-            DestroyThis();
+            Health h = other.gameObject.GetComponent<Health>();
+            if (h != null)
+            {
+                if (impactParticles)
+                {
+                    impactParticles.Play();
+                }
+                h.TakeDamage(damage);
+                FindObjectOfType<CameraFollow>().AddShake(0.15f);
+                DestroyThis();
+            }
         }
     }
 }

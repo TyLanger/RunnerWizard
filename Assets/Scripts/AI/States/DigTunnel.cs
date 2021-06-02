@@ -15,7 +15,7 @@ public class DigTunnel : IState
     float proximityToCenter = 2;
 
     Vector3 breachPoint;
-    int numShots = 0;
+    //int numShots = 0;
     float bulletRange = 0;
 
 
@@ -90,7 +90,7 @@ public class DigTunnel : IState
 
         if(Vector3.Distance(myBrain.transform.position, centerOfNewQuad) < proximityToCenter)
         {
-            Debug.Log("Made it to a new quad");
+            //Debug.Log("Made it to a new quad");
             myBrain.SetDestination(myBrain.transform.position);
             myBrain.stateMachine.SetState(new WaitForPlayer(myBrain));
         }

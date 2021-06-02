@@ -14,10 +14,16 @@ public class Motor : MonoBehaviour
     Vector3 momentumDir;
     public float lookMultiplierMultiplier = 0.2f;
 
+    public ParticleSystem runDustParticles;
+    public float dustSpeed = 15;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(runDustParticles)
+        {
+            runDustParticles.Play();
+        }
     }
 
     // Update is called once per frame
@@ -34,6 +40,21 @@ public class Motor : MonoBehaviour
         float lookMultiplier = (1 + lookMultiplierMultiplier * Ease.SmoothStep(Mathf.Clamp(lookDot, 0, 1)));
 
         currentSpeed = moveSpeed * momentumMultiplier * lookMultiplier;
+
+        if (runDustParticles != null)
+        {
+            if (currentSpeed > dustSpeed)
+            {
+                if (!runDustParticles.isPlaying)
+                {
+                    runDustParticles.Play();
+                }
+            }
+            else
+            {
+                runDustParticles.Stop();
+            }
+        }
 
         if (motorMovement)
         {
