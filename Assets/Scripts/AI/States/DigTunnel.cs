@@ -35,6 +35,8 @@ public class DigTunnel : IState
             RunnerBrain b = (RunnerBrain)myBrain;
             if (b)
             {
+                b.UpdatePlayerSpawn();
+
                 (breachPoint, lookPoint) = b.GetWallBreachPoint();
                 destination = breachPoint;
                 destFound = true; // so not using null vector in Tick. Is OnEnter guarenteed to run before tick?

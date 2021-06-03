@@ -32,7 +32,7 @@ public class RunnerBrain : Brain
     MapGrid map;
     Vector3 recentRoomCenter;
     float recentRoomRadius;
-
+    public float roomRadius = 5.5f;
 
     public Brain chaserPrefab;
     int numMinions = 2;
@@ -111,12 +111,12 @@ public class RunnerBrain : Brain
         chainCopy.GetComponent<Health>().maxHealth = 10;
     }
 
-    public void SpawnMinions()
+    public void SpawnMinions(int num = 3)
     {
-        StartCoroutine(CreateMinions());
+        StartCoroutine(CreateMinions(num));
     }
 
-    IEnumerator CreateMinions()
+    IEnumerator CreateMinions(int num)
     {
         yield return new WaitForSeconds(0.5f);
 
@@ -124,7 +124,7 @@ public class RunnerBrain : Brain
         Vector3 perpLine = transform.position - player.position;
         perpLine = new Vector3(-perpLine.z, perpLine.y, perpLine.x).normalized;
 
-        int minionsToSpawn = numMinions + quadsVisited;
+        int minionsToSpawn = num;
 
         for (int i = 0; i < minionsToSpawn; i++)
         {
@@ -169,10 +169,9 @@ public class RunnerBrain : Brain
     IEnumerator CarveRoom()
     {
         yield return null;
-        float radius = 5.5f;
-        map.MoveCircle(transform.position, radius, false);
+        map.MoveCircle(transform.position, roomRadius, false);
         recentRoomCenter = transform.position;
-        recentRoomRadius = radius;
+        recentRoomRadius = roomRadius;
 
         OnRoomCreated?.Invoke(recentRoomCenter, recentRoomRadius, quadsVisited);
     }
@@ -272,5 +271,15 @@ public class RunnerBrain : Brain
 
         }
     }
+
+    public void UpdatePlayerSpawn()
+    {
+        Health h = player.GetComponent<Health>();
+        if(h)
+        {
+            h.SetRespawnPoint(recentRoomCenter);
+        }
+    }
+
 
 }

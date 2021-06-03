@@ -12,6 +12,8 @@ public class Health : MonoBehaviour, IRuleable
     public int currentHealth;
 
     bool dead = false;
+    public bool canRespawn = false;
+    Vector3 respawnPoint;
 
     bool isProtected = false;
 
@@ -21,10 +23,12 @@ public class Health : MonoBehaviour, IRuleable
     public GameObject healthBarPrefab;
     public Vector3 hpBarOffset;
     GameObject healthBar;
+    Slider s;
 
     // Start is called before the first frame update
     void Start()
     {
+        respawnPoint = transform.position;
         currentHealth = maxHealth;
         PlayerInput p = GetComponent<PlayerInput>();
         if(p)
@@ -33,7 +37,7 @@ public class Health : MonoBehaviour, IRuleable
             cam = FindObjectOfType<CameraFollow>();
         }
         healthBar = Instantiate(healthBarPrefab, transform.position + hpBarOffset, transform.rotation);
-        
+        s = healthBar.GetComponentInChildren<Slider>();
     }
 
     // Update is called once per frame
@@ -63,7 +67,7 @@ public class Health : MonoBehaviour, IRuleable
                 cam.AddShake(3* damage / maxHealth);
             }
             currentHealth -= damage;
-            Slider s = healthBar.GetComponentInChildren<Slider>();
+            
             s.value = Mathf.Clamp01(((float)currentHealth / maxHealth));
             if (currentHealth <= 0)
             {
@@ -74,13 +78,31 @@ public class Health : MonoBehaviour, IRuleable
 
     void Die()
     {
+        if(canRespawn)
+        {
+            Respawn();
+            return;
+        }
         dead = true;
         Destroy(healthBar);
         OnDeath?.Invoke(gameObject);
     }
 
+    void Respawn()
+    {
+        transform.position = respawnPoint;
+        currentHealth = maxHealth;
+        s.value = 1;
+    }
+
     public void Protect(bool active)
     {
         isProtected = active;   
+    }
+
+    public void SetRespawnPoint(Vector3 point)
+    {
+        Debug.Log($"Spawn point set to {point}");
+        respawnPoint = point;
     }
 }

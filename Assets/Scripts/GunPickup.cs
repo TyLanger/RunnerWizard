@@ -14,7 +14,7 @@ public class GunPickup : MonoBehaviour
         PlayerInput player = other.GetComponent<PlayerInput>();
         if(player)
         {
-            if(player.GiveGun(guns[gunType], gunType));
+            if(player.GiveGun(guns[gunType], gunType))
                 Destroy(gameObject);
         }
     }

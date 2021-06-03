@@ -19,7 +19,7 @@ public class CreateRoom : IState
             if (b)
             {
                 b.SpawnRoom();
-                b.SpawnMinions();
+                //b.SpawnMinions();
             }
         }
     }

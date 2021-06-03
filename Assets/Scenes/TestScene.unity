@@ -5116,7 +5116,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100002, guid: 47616bd0cda748d4cbedcfc908506b9d, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10534,6 +10534,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 0
+  canRespawn: 1
   healthBarPrefab: {fileID: 3029004009258727945, guid: 6ff73e5692f612f4eb183202f0d8cbe8, type: 3}
   hpBarOffset: {x: 0, y: 1, z: 0}
 --- !u!1 &1138096547
@@ -10666,6 +10667,7 @@ MonoBehaviour:
   player: {fileID: 1068407439}
   gun: {fileID: 793982945}
   CurrentStateName: 
+  roomRadius: 5.5
   chaserPrefab: {fileID: 2130875519008734751, guid: 371bfebc0f1ebba49a70750e31006748, type: 3}
   rangerPrefab: {fileID: 5039853365750501925, guid: b6383a76f171af1469e2d1079f5af116, type: 3}
   distBehindMinion: 7
@@ -10820,6 +10822,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 50
   currentHealth: 0
+  canRespawn: 0
   healthBarPrefab: {fileID: 3029004009258727945, guid: 6ff73e5692f612f4eb183202f0d8cbe8, type: 3}
   hpBarOffset: {x: 0, y: 1, z: 0}
 --- !u!1 &1928539971

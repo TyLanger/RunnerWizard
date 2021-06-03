@@ -118,4 +118,5 @@ public class Brain : MonoBehaviour
         dead = true;
         stateMachine.SetState(new Death(this));
     }
+
 }

@@ -20,9 +20,13 @@ public class GameScript : MonoBehaviour
 
     public Rule[] rules;
 
+    CameraFollow cam;
+
     // Start is called before the first frame update
     void Start()
     {
+        cam = FindObjectOfType<CameraFollow>();
+
         StartCoroutine(DigStartingRooms());
         Invoke("StartRunner", 3);
 
@@ -60,13 +64,36 @@ public class GameScript : MonoBehaviour
 
         switch(roomNumber)
         {
+            case 1:
+                runner.SpawnMinions(3);
+                break;
             case 2:
                 //runner.CreateRule(runner.dropRule);
+                runner.SpawnMinions(4);
                 SpawnGunsAroundRoom(center, radius);
                 break;
 
             case 3:
+                runner.SpawnMinions(4);
+                break;
+            case 4:
+                runner.SpawnMinions(3);
                 runner.SpawnRangedMinions(2);
+                break;
+            case 5:
+                runner.SpawnMinions(5);
+                break;
+            case 6:
+                runner.SpawnMinions(3);
+                runner.SpawnRangedMinions(3);
+                runner.roomRadius += 2;
+                break;
+            case 7:
+                StartCoroutine(PeriodicScreenShake());
+                // if I don't spawn at least 1 enemy, the runner won't swap to digTunnel automatically
+                runner.stateMachine.SetState(new DigTunnel(runner));
+                break;
+            case 8:
                 break;
 
         }
@@ -91,5 +118,17 @@ public class GameScript : MonoBehaviour
         GunPickup p = Instantiate(gunPickupPrefab, position, transform.rotation);
         int r = Random.Range(0, p.guns.Length);
         p.SetGun(r);
+    }
+
+    IEnumerator PeriodicScreenShake()
+    {
+        while(true)
+        {
+            // vary it a little
+            cam.AddShake(0.5f);
+            yield return new WaitForSeconds(1);
+            cam.AddShake(0.2f);
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 }
