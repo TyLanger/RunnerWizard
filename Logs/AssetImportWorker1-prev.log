@@ -2840,3 +2840,27 @@ System memory in use after: 120.0 MB.
 Unloading 44 unused Assets to reduce memory usage. Loaded Objects now: 3964.
 Total: 4.943600 ms (FindLiveObjects: 0.405100 ms CreateObjectMapping: 0.127800 ms MarkObjects: 2.871800 ms  DeleteObjects: 1.537500 ms)
 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.002062 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 0.43 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.194 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.46 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2387 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 122.2 MB.
+System memory in use after: 119.9 MB.
+
+Unloading 41 unused Assets to reduce memory usage. Loaded Objects now: 3967.
+Total: 7.151100 ms (FindLiveObjects: 0.487600 ms CreateObjectMapping: 0.175500 ms MarkObjects: 4.633300 ms  DeleteObjects: 1.852500 ms)
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(Motor))]
-public class PlayerInput : MonoBehaviour, IDroppable
+public class PlayerInput : MonoBehaviour, IDroppable, ICantShoot
 {
 
     Vector3 moveInput;
@@ -15,6 +15,7 @@ public class PlayerInput : MonoBehaviour, IDroppable
     bool hasGun = false;
     int gunType;
     public Transform hand;
+    bool canShoot = true;
 
     public GunPickup gunPickupPrefab;
 
@@ -49,17 +50,29 @@ public class PlayerInput : MonoBehaviour, IDroppable
         }
         if(Input.GetButton("Fire1"))
         {
-            if (hasGun)
+            if (canShoot)
             {
-                gun.Fire();
+                if (hasGun)
+                {
+                    gun.Fire();
+                }
+                else
+                {
+                    handGun.Fire();
+                }
             }
             else
             {
-                handGun.Fire();
+                // click sound
+                // gun.ClickSound()
+                // also called internally for out of ammo
+                // is that confusing?
             }
+
         }
-        if (Input.GetButtonDown("Fire2"))
+        if (Input.GetButtonDown("Fire2") || Input.GetKeyDown(KeyCode.Q))
         {
+            // drop with right click or Q(like minecraft)
             //FindObjectOfType<MapGrid>().MoveCircle(transform.position, 1.5f, false);
             DropGun();
         }
@@ -69,6 +82,21 @@ public class PlayerInput : MonoBehaviour, IDroppable
                 gun.Reload();
             handGun.Reload();
         }
+        if(Input.GetKeyDown(KeyCode.G))
+        {
+            Health h = GetComponent<Health>();
+            if(h)
+            {
+                h.Reset();
+            }
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if(rb)
+            {
+                // might fix it if you're falling out of the world?
+                rb.velocity = Vector3.zero;
+            }
+        }
+
     }
 
     /// <summary>
@@ -107,5 +135,10 @@ public class PlayerInput : MonoBehaviour, IDroppable
             //copy.gun = gun; 
             Destroy(gun.gameObject);
         }
+    }
+
+    public void CanShoot(bool able)
+    {
+        canShoot = able;
     }
 }

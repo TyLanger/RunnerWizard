@@ -13,6 +13,8 @@ public class Brain : MonoBehaviour
     public Gun gun;
     protected CameraFollow cam;
 
+    protected bool canShoot = true;
+
     public StateMachine stateMachine;
     public string CurrentStateName;
     protected bool dead = false;
@@ -110,7 +112,14 @@ public class Brain : MonoBehaviour
 
     public virtual void Shoot()
     {
-        gun.Fire();
+        if (canShoot)
+        {
+            gun.Fire();
+        }
+        else
+        {
+            // gun.ClickSound
+        }
     }
 
     void Die(GameObject go)

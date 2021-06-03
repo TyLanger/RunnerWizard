@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangerBrain : Brain
+public class RangerBrain : Brain, ICantShoot
 {
     public float runAwayDist = 6;
     public float safeDist = 14; // feels safe enough to stop running
 
-
-
+    public void CanShoot(bool able)
+    {
+        canShoot = able;
+    }
 
     // Update is called once per frame
     protected override void Update()
@@ -34,4 +36,6 @@ public class RangerBrain : Brain
             }
         }
     }
+
+    
 }

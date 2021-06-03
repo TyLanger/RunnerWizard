@@ -31,8 +31,8 @@ public class WaitForPlayer : IState
         timeSpentWaiting += Time.deltaTime;
         if(Vector3.Distance(myBrain.transform.position, myBrain.player.position) < playerNearDistance)
         {
-            // player found up
-            Debug.Log($"Waited for {timeSpentWaiting} seconds");
+            // player found us
+            //Debug.Log($"Waited for {timeSpentWaiting} seconds");
             myBrain.stateMachine.SetState(new CreateRoom(myBrain));
         }
     }

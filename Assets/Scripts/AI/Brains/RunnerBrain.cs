@@ -49,6 +49,7 @@ public class RunnerBrain : Brain
     public ChainController chain;
     public Rule blockerRule;
     public Rule dropRule;
+    public Rule cantShootRule;
 
     // Start is called before the first frame update
     protected override void Awake()
@@ -77,14 +78,27 @@ public class RunnerBrain : Brain
 
     public void CreateRule(Rule rule)
     {
-        // pick a rule
-        // spawn it behind me
+        /*
         Rule copy = Instantiate(rule, transform.position + Vector3.back * 2f, transform.rotation);
         ChainController chainCopy = Instantiate(chain, transform.position + Vector3.back, transform.rotation);
 
         chainCopy.SetTargets(transform, copy.transform);
         copy.SetChain(chainCopy);
         copy.SetTetherTarget(transform);
+        */
+        CreateRule(rule, transform);
+    }
+
+    public void CreateRule(Rule rule, Transform anchor, float radiusMultiplier = 1)
+    {
+        // pick a rule
+        // spawn it behind me
+        Rule copy = Instantiate(rule, anchor.position + anchor.forward * -2f, anchor.rotation);
+        ChainController chainCopy = Instantiate(chain, anchor.position + -1*anchor.forward, anchor.rotation);
+        copy.radius *= radiusMultiplier;
+        chainCopy.SetTargets(anchor, copy.transform);
+        copy.SetChain(chainCopy);
+        copy.SetTetherTarget(anchor);
     }
 
     public void CreateRule(Rule rule, Vector3 anchorA, Vector3 anchorB)
@@ -111,12 +125,12 @@ public class RunnerBrain : Brain
         chainCopy.GetComponent<Health>().maxHealth = 10;
     }
 
-    public void SpawnMinions(int num = 3)
+    public void SpawnMinions(int num = 3, Rule[] rules=null)
     {
-        StartCoroutine(CreateMinions(num));
+        StartCoroutine(CreateMinions(num, rules));
     }
 
-    IEnumerator CreateMinions(int num)
+    IEnumerator CreateMinions(int num, Rule[] rules=null)
     {
         yield return new WaitForSeconds(0.5f);
 
@@ -136,6 +150,12 @@ public class RunnerBrain : Brain
                 h.OnDeath += MinionDeath;
             }
             minions.Add(copy.transform);
+            // wtf is this nonsense?
+            if(rules != null && i < rules.Length && rules[i] != null)
+            {
+                // make the radius smaller when attached to a minion
+                CreateRule(rules[i], copy.transform, 0.35f);
+            }
             
         }
 
@@ -244,6 +264,9 @@ public class RunnerBrain : Brain
 
 
         Vector3 centerOfNewQuad = map.GetQuadrantCenter(quadsVisited);
+        // if the center block is already down,
+        // the center will be underground. This fixs that
+        centerOfNewQuad = new Vector3(centerOfNewQuad.x, transform.position.y, centerOfNewQuad.z);
         return centerOfNewQuad;
     }
 

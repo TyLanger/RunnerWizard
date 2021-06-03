@@ -70,22 +70,29 @@ public class GameScript : MonoBehaviour
             case 2:
                 //runner.CreateRule(runner.dropRule);
                 runner.SpawnMinions(4);
-                SpawnGunsAroundRoom(center, radius);
                 break;
 
             case 3:
                 runner.SpawnMinions(4);
+                SpawnGunsAroundRoom(center, radius);
                 break;
             case 4:
-                runner.SpawnMinions(3);
+                Rule[] minionRuleRoom4 = { null, rules[2], null };
+                runner.SpawnMinions(3, minionRuleRoom4);
                 runner.SpawnRangedMinions(2);
                 break;
             case 5:
-                runner.SpawnMinions(5);
+                Rule[] minionRules = { rules[5], null, rules[2], null, rules[5] };
+
+                runner.SpawnMinions(5, minionRules);
                 break;
             case 6:
-                runner.SpawnMinions(3);
+                Rule[] minionRulesRoom6 = { rules[6], rules[3], rules[6] };
+
+                runner.SpawnMinions(3, minionRulesRoom6);
                 runner.SpawnRangedMinions(3);
+                SpawnGunsAroundRoom(center, radius);
+                // room larger for next room
                 runner.roomRadius += 2;
                 break;
             case 7:

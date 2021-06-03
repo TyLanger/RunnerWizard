@@ -19,7 +19,7 @@ public class DamageBox : MonoBehaviour
         Health h = other.GetComponent<Health>();
         if(h)
         {
-            Debug.Log($"Hit {other.gameObject.name}");
+            //Debug.Log($"Hit {other.gameObject.name}");
             h.TakeDamage(10);
         }
     }

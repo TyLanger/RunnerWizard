@@ -10606,12 +10606,12 @@ MonoBehaviour:
   gunPickupPrefab: {fileID: 6725507232270158370, guid: 93571471e79127743abd651f2f658d63, type: 3}
   rules:
   - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 5786523028712492049, guid: 9c9eb7bb8c3ab914da4d25489d2ccaf1, type: 3}
   - {fileID: 8067980552393704491, guid: e0a6375b2ba1ce14ea7c83af22b9ff44, type: 3}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 7108352925314783263, guid: cece37de1a3774f469e5e64d07ebbd93, type: 3}
+  - {fileID: 7108352925314783263, guid: cece37de1a3774f469e5e64d07ebbd93, type: 3}
   - {fileID: 0}
   - {fileID: 0}
 --- !u!4 &1234214605
@@ -10675,6 +10675,7 @@ MonoBehaviour:
   chain: {fileID: 2775255838591393181, guid: 9b99d7389c94f2048ad7608cdd351fd9, type: 3}
   blockerRule: {fileID: 2922553229994200220, guid: 3f6486e426674934cac65b6fc3b6502b, type: 3}
   dropRule: {fileID: 8067980552393704491, guid: e0a6375b2ba1ce14ea7c83af22b9ff44, type: 3}
+  cantShootRule: {fileID: 7108352925314783263, guid: cece37de1a3774f469e5e64d07ebbd93, type: 3}
 --- !u!114 &1676176544
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -95,6 +95,13 @@ public class Health : MonoBehaviour, IRuleable
         s.value = 1;
     }
 
+    public void Reset()
+    {
+        // if the player gets stuck, they can press G to reset
+        // whatever if it also gives you full hp
+        Respawn();
+    }
+
     public void Protect(bool active)
     {
         isProtected = active;   
@@ -102,7 +109,7 @@ public class Health : MonoBehaviour, IRuleable
 
     public void SetRespawnPoint(Vector3 point)
     {
-        Debug.Log($"Spawn point set to {point}");
+        //Debug.Log($"Spawn point set to {point}");
         respawnPoint = point;
     }
 }
