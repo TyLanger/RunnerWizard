@@ -34,7 +34,7 @@ public class RunnerBrain : Brain
 
 
     public Brain chaserPrefab;
-    int numMinions = 3;
+    int numMinions = 2;
     float minionSpacing = 5;
 
     public float distBehindMinion = 15;
@@ -56,7 +56,7 @@ public class RunnerBrain : Brain
         minions = new List<Transform>();
 
         spawnPos = transform.position;
-        stateMachine.SetState(new CreateRoom(this));
+        //stateMachine.SetState(new CreateRoom(this));
 
         CreateRule(ruleToSpawn);
     }
@@ -132,8 +132,7 @@ public class RunnerBrain : Brain
 
     IEnumerator CreateMinions()
     {
-        yield return null;
-        yield return null;
+        yield return new WaitForSeconds(0.5f);
 
         Vector3 midPoint = (transform.position + player.position)/2;
         Vector3 perpLine = transform.position - player.position;
@@ -172,6 +171,12 @@ public class RunnerBrain : Brain
 
     }
 
+    public void SetupStartRoom(Vector3 center, float radius)
+    {
+        recentRoomCenter = center;
+        recentRoomRadius = radius;
+    }
+
     public Vector3 GetPointBehindMinion()
     {
         Vector3 closestPoint = transform.position;
@@ -198,18 +203,37 @@ public class RunnerBrain : Brain
 
     public (Vector3 position, Vector3 lookPoint) GetWallBreachPoint()
     {
+
         Vector3 mapCenter = map.transform.position;
         Vector3 mapCenterDir = mapCenter - recentRoomCenter;
 
         // radius is in blocks. Multiply by spacing to get real distance
         Vector3 position = recentRoomCenter + mapCenterDir.normalized * recentRoomRadius * map.spacing * 0.7f;
         Vector3 lookPoint = new Vector3(mapCenter.x, transform.position.y, mapCenter.z);
-        
+
+        // doesn't work for visited 1,3,5
+
+        switch (quadsVisited)
+        {
+            case 1:
+                lookPoint += Vector3.left * 60;
+                break;
+            case 3:
+                lookPoint += Vector3.forward * 60;
+                break;
+            case 5:
+                lookPoint += Vector3.right * 60;
+                break;
+        }
+
+        Debug.DrawLine(transform.position, lookPoint, Color.magenta, 30);
+
         return (position, lookPoint);
     }
 
     public Vector3 GetNewQuadrant()
     {
+        /*
         // use my position to figure out my quad
         // split the map into 4 quads.
         // tunnel to another one
@@ -240,10 +264,13 @@ public class RunnerBrain : Brain
                 break;
 
         }
+        */
+
+        // just going in order now
         quadsVisited++;
 
 
-        Vector3 centerOfNewQuad = map.GetQuadrantCenter(right, top);
+        Vector3 centerOfNewQuad = map.GetQuadrantCenter(quadsVisited);
         return centerOfNewQuad;
     }
 

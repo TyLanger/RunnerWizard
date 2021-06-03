@@ -185,7 +185,7 @@ public class MapGrid : MonoBehaviour
         return distSquared <= radius * radius;
     }
 
-    public Vector3 GetQuadrantCenter(bool right, bool top)
+    public Vector3 GetQuadrantCenter(bool right, bool top, bool mid=false)
     {
         int xOffset = 0;
         int zOffset = 0;
@@ -203,6 +203,57 @@ public class MapGrid : MonoBehaviour
 
         xOffset += width / 4;
         zOffset += height / 4;
+
+        Vector3 centerOfQuad = grid[xOffset, zOffset].transform.position;
+        return centerOfQuad;
+    }
+
+    public Vector3 GetQuadrantCenter(int quadNumber)
+    {
+        // 0 is bottom right
+        // 1 is bottom middle
+        // 8 is center
+        // start in bottom right, go around clockwise
+        // bc that's how I want the game to play out
+        int xOffset = 0;
+        int zOffset = 0;
+        switch(quadNumber)
+        {
+            case 0:
+                xOffset += width * 2 / 3;
+                break;
+            case 1:
+                xOffset += width * 1 / 3;
+                break;
+            case 2:
+                
+                break;
+            case 3:
+                zOffset += height * 1 / 3;
+                break;
+            case 4:
+                zOffset += height * 2 / 3;
+                break;
+            case 5:
+                xOffset += width * 1 / 3;
+                zOffset += height * 2 / 3;
+                break;
+            case 6:
+                xOffset += width * 2 / 3;
+                zOffset += height * 2 / 3;
+                break;
+            case 7:
+                xOffset += width * 2 / 3;
+                zOffset += height * 1 / 3;
+                break;
+            case 8:
+                xOffset += width * 1 / 3;
+                zOffset += height * 1 / 3;
+                break;
+        }
+
+        xOffset += width / 6;
+        zOffset += height / 6;
 
         Vector3 centerOfQuad = grid[xOffset, zOffset].transform.position;
         return centerOfQuad;

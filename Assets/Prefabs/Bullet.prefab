@@ -9837,7 +9837,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 26
-  damage: 2
+  damage: 4
   lifetime: 4
   impactParticles: {fileID: 1143478165}
 --- !u!54 &-1437414507862660659

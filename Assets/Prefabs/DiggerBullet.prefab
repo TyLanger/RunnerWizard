@@ -113,7 +113,7 @@ MonoBehaviour:
   damage: 0
   lifetime: 40
   impactParticles: {fileID: 0}
-  digRadius: 1
+  digRadius: 1.2
   travelDist: 30
 --- !u!54 &6786833942508734779
 Rigidbody:

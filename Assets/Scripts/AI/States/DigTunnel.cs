@@ -18,6 +18,9 @@ public class DigTunnel : IState
     //int numShots = 0;
     float bulletRange = 0;
 
+    float stuckTimer = 0;
+    float timeToTele = 7;
+    bool reachedBreachPoint = false;
 
     public DigTunnel(Brain brain)
     {
@@ -65,6 +68,13 @@ public class DigTunnel : IState
 
     public void Tick()
     {
+        if(!reachedBreachPoint && timeToTele < stuckTimer)
+        {
+            // tele if stuck before getting to the breach point
+            myBrain.Tele(destination);
+            Debug.Log("Had to tele");
+        }
+        stuckTimer += Time.deltaTime;
         //Debug.Log($"Has shot: {hasShot} Dest found: {destFound}");
         if (!hasShot)
         {
@@ -76,6 +86,7 @@ public class DigTunnel : IState
                 {
                     myBrain.Aim(lookPoint);
                     hasShot = true;
+                    reachedBreachPoint = true;
                     myBrain.Shoot();
                     myBrain.SetDestination(myBrain.transform.position);
                 }
@@ -92,7 +103,7 @@ public class DigTunnel : IState
 
     void BulletEnded(Vector3 position)
     {
-        Debug.Log("Bullet Ended");
+        //Debug.Log("Bullet Ended");
         Debug.DrawLine(myBrain.transform.position, position, Color.blue, 20);
         //myBrain.SetDestination(position);
         hasShot = false; // get ready for a second shot

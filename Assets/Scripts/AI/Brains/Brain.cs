@@ -76,6 +76,11 @@ public class Brain : MonoBehaviour
         agent.isStopped = true;
     }
 
+    public void Tele(Vector3 position)
+    {
+        agent.Warp(position);
+    }
+
     public Vector3 GetPlayerPos()
     {
         return player.position;

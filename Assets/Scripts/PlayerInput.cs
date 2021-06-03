@@ -11,6 +11,10 @@ public class PlayerInput : MonoBehaviour
     Motor motor;
 
     public Gun gun;
+    bool hasGun = false;
+    public Transform hand;
+
+    public GunPickup gunPickupPrefab;
 
     Camera mainCam;
 
@@ -39,19 +43,43 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))
         {
-            FindObjectOfType<MapGrid>().MoveCircle(transform.position, 1.5f, true);
+            //FindObjectOfType<MapGrid>().MoveCircle(transform.position, 1.5f, true);
         }
         if(Input.GetButton("Fire1"))
         {
-            gun.Fire();
+            if(hasGun)
+                gun.Fire();
         }
         if (Input.GetButtonDown("Fire2"))
         {
-            FindObjectOfType<MapGrid>().MoveCircle(transform.position, 1.5f, false);
+            //FindObjectOfType<MapGrid>().MoveCircle(transform.position, 1.5f, false);
+            DropGun();
         }
         if(Input.GetKeyDown(KeyCode.R))
         {
-            gun.Reload();
+            if(hasGun)
+                gun.Reload();
         }
+    }
+
+    public void GiveGun(Gun newGun)
+    {
+        gun = Instantiate(newGun, hand.position, hand.rotation, hand);
+        hasGun = true;
+    }
+
+    public void DropGun()
+    {
+        hasGun = false;
+        GunPickup copy = Instantiate(gunPickupPrefab, transform.position + Vector3.back * 2, transform.rotation);
+        // prefab already has a gun
+        // if I give them mine, it messes up when I delete mine
+        // I wanted to do it this way so it can work if I have different guns
+        // maybe I'll have to do
+        //copy.gunType = gun.type
+        // and then the prefab has all possible guns
+
+        //copy.gun = gun; 
+        Destroy(gun.gameObject);
     }
 }
