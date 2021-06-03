@@ -78,6 +78,11 @@ public class Brain : MonoBehaviour
         agent.isStopped = true;
     }
 
+    public void StartPathing()
+    {
+        agent.isStopped = false;
+    }
+
     public void Tele(Vector3 position)
     {
         agent.Warp(position);
@@ -122,7 +127,7 @@ public class Brain : MonoBehaviour
         }
     }
 
-    void Die(GameObject go)
+    protected virtual void Die(GameObject go)
     {
         dead = true;
         stateMachine.SetState(new Death(this));

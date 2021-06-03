@@ -50,7 +50,7 @@ public class DigTunnel : IState
                 // *2 put the block a bit into where the tunnel will be
                 b.CreateBlockRule(breachPoint + toCenterDir * 5, toCenterDir);
 
-                myBrain.gun.OnBulletEnded += BulletEnded;
+                //myBrain.gun.OnBulletEnded += BulletEnded;
                 Bullet bullet = myBrain.gun.bullet;
                 if(bullet.GetType() == typeof(DiggerBullet))
                 {
@@ -64,7 +64,11 @@ public class DigTunnel : IState
 
     public void OnExit()
     {
-        myBrain.gun.OnBulletEnded -= BulletEnded;
+        // moved out of OnExit to work with BreakState
+        // leaving this state to go to BreakState while a bullet is in the air would break stuff
+        // now you enter breakstate, then the bullet reaches and BulletEnded runs
+        // when you get back, should have the update info
+        //myBrain.gun.OnBulletEnded -= BulletEnded;
 
     }
 
@@ -89,6 +93,7 @@ public class DigTunnel : IState
                     myBrain.Aim(lookPoint);
                     hasShot = true;
                     reachedBreachPoint = true;
+                    myBrain.gun.OnBulletEnded += BulletEnded;
                     myBrain.Shoot();
                     myBrain.SetDestination(myBrain.transform.position);
                 }
@@ -105,12 +110,15 @@ public class DigTunnel : IState
 
     void BulletEnded(Vector3 position)
     {
+        myBrain.gun.OnBulletEnded -= BulletEnded;
+
         //Debug.Log("Bullet Ended");
         Debug.DrawLine(myBrain.transform.position, position, Color.blue, 20);
         //myBrain.SetDestination(position);
         hasShot = false; // get ready for a second shot
         destination = position;
-        myBrain.SetDestination(destination);
+        // moving handled in tick
+        //myBrain.SetDestination(destination);
         //lookPoint = GetAimPoint();// new Vector3(centerOfNewQuad.x, myBrain.transform.position.y, centerOfNewQuad.z);
         lookPoint = GetAimPointForZigZag();
     }

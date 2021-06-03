@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Health : MonoBehaviour, IRuleable
+public class Health : MonoBehaviour, IRuleable, IHealable
 {
     public event Action<GameObject> OnDeath;
 
@@ -14,6 +14,10 @@ public class Health : MonoBehaviour, IRuleable
     bool dead = false;
     public bool canRespawn = false;
     Vector3 respawnPoint;
+    public bool isRunner = false;
+
+    float timeBetweenHeals = 0.5f;
+    float timeOfNextHeal = 0;
 
     bool isProtected = false;
 
@@ -76,16 +80,36 @@ public class Health : MonoBehaviour, IRuleable
         }
     }
 
+    public void Heal(int healAmount)
+    {
+        if (Time.time > timeOfNextHeal)
+        {
+            timeOfNextHeal = Time.time + timeBetweenHeals;
+
+            currentHealth += healAmount;
+            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+            s.value = Mathf.Clamp01((float)currentHealth / maxHealth);
+        }
+    }
+    public float GetHealthPercent()
+    {
+        return (float)currentHealth / maxHealth;
+    }
+
     void Die()
     {
-        if(canRespawn)
+        OnDeath?.Invoke(gameObject);
+        if(isRunner)
+        {
+            return;
+        }
+        if (canRespawn)
         {
             Respawn();
             return;
         }
         dead = true;
         Destroy(healthBar);
-        OnDeath?.Invoke(gameObject);
     }
 
     void Respawn()

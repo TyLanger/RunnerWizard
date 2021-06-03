@@ -16,6 +16,7 @@ public class PlayerInput : MonoBehaviour, IDroppable, ICantShoot
     int gunType;
     public Transform hand;
     bool canShoot = true;
+    bool canMove = true;
 
     public GunPickup gunPickupPrefab;
 
@@ -31,8 +32,18 @@ public class PlayerInput : MonoBehaviour, IDroppable, ICantShoot
     // Update is called once per frame
     void Update()
     {
-        moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        if (canMove)
+        {
+            moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+
+        }
+        else
+        {
+            moveInput = Vector3.zero;
+        }
+
         motor.MoveTo(moveInput.normalized);
+
 
         // look at mouse
         Ray CameraRay = mainCam.ScreenPointToRay(Input.mousePosition);
@@ -140,5 +151,10 @@ public class PlayerInput : MonoBehaviour, IDroppable, ICantShoot
     public void CanShoot(bool able)
     {
         canShoot = able;
+    }
+
+    public void CanMove(bool able)
+    {
+        canMove = able;
     }
 }

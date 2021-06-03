@@ -24,6 +24,7 @@ public class RunnerBrain : Brain
     // break time
 
     public event Action<Vector3, float, int> OnRoomCreated;
+    public event Action<int> OnRunnerDeath;
 
     Vector3 spawnPos;
 
@@ -50,6 +51,7 @@ public class RunnerBrain : Brain
     public Rule blockerRule;
     public Rule dropRule;
     public Rule cantShootRule;
+    public Rule healRule;
 
     // Start is called before the first frame update
     protected override void Awake()
@@ -101,14 +103,17 @@ public class RunnerBrain : Brain
         copy.SetTetherTarget(anchor);
     }
 
-    public void CreateRule(Rule rule, Vector3 anchorA, Vector3 anchorB)
+    public void CreateRule(Rule rule, Vector3 anchorA, Vector3 anchorB, int chainHp = 3)
     {
-        Rule copy = Instantiate(rule, transform.position + Vector3.back * 2f, transform.rotation);
-        ChainController chainCopy = Instantiate(chain, transform.position + Vector3.back, transform.rotation);
+        Vector3 center = (anchorA + anchorB) / 2;
+        Rule copy = Instantiate(rule, center, transform.rotation);
+        ChainController chainCopy = Instantiate(chain, center, transform.rotation);
 
         chainCopy.SetPoints(anchorA, anchorB);
         copy.SetChain(chainCopy);
         copy.SetTetherTarget(chainCopy.transform); // will this cause them to move around?
+        chainCopy.GetComponent<Health>().maxHealth = chainHp;
+
     }
 
     public void CreateBlockRule(Vector3 spawnPoint, Vector3 forward)
@@ -123,6 +128,13 @@ public class RunnerBrain : Brain
         r.SetChain(chainCopy);
         r.SetTetherTarget(chainCopy.transform);
         chainCopy.GetComponent<Health>().maxHealth = 10;
+    }
+
+    public void CreateHealRule(Vector3 center)
+    {
+        // bullets currently in the air can break the rule immediately
+        // so buff its hp to 100
+        CreateRule(healRule, center + Vector3.left, center+Vector3.right, 100);
     }
 
     public void SpawnMinions(int num = 3, Rule[] rules=null)
@@ -148,6 +160,8 @@ public class RunnerBrain : Brain
             if (h)
             {
                 h.OnDeath += MinionDeath;
+                // kill the minions if the runner dies
+                OnRunnerDeath += h.TakeDamage;
             }
             minions.Add(copy.transform);
             // wtf is this nonsense?
@@ -176,6 +190,8 @@ public class RunnerBrain : Brain
             if(h)
             {
                 h.OnDeath += MinionDeath;
+                // kill the minions if the runner dies
+                OnRunnerDeath += h.TakeDamage;
             }
             minions.Add(copy.transform);
         }
@@ -204,6 +220,12 @@ public class RunnerBrain : Brain
 
     public Vector3 GetPointBehindMinion()
     {
+        if(minions.Count < 2)
+        {
+            // most minions dead
+            stateMachine.SetState(new DigTunnel(this));
+        }
+
         Vector3 closestPoint = transform.position;
         float closestDist = Mathf.Infinity;
 
@@ -304,5 +326,18 @@ public class RunnerBrain : Brain
         }
     }
 
+    protected override void Die(GameObject go)
+    {
+        OnRunnerDeath?.Invoke(1000);
+        // killing all of the enemies causes the runner to swap to DigTunnel
+        // wait 1 frame before swapping
+        StartCoroutine(BreakTime());
+    }
 
+    IEnumerator BreakTime()
+    {
+        yield return null;
+        stateMachine.SetState(new BreakState(this, stateMachine.GetCurrentState()));
+
+    }
 }

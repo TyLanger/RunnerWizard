@@ -21,6 +21,20 @@ public class StateMachine
         currentState?.OnEnter();
     }
 
+    public IState GetCurrentState()
+    {
+        return currentState;
+    }
+
+    public void ReturnToState(IState state)
+    {
+        if (currentState != null && state.GetType() == currentState.GetType())
+            return;
+
+        currentState?.OnExit();
+        currentState = state;
+        // don't enter again
+    }
     public string GetCurrentStateName()
     {
         return currentState.GetType().ToString();
