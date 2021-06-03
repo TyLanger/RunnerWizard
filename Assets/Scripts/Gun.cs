@@ -70,6 +70,11 @@ public class Gun : MonoBehaviour
         currentlyReloading = false;
     }
 
+    public float GetClipPercent()
+    {
+        return (float)currentBullets / clipSize;
+    }
+
     void BulletEnded(Vector3 position)
     {
         // should I be propogating events like this?

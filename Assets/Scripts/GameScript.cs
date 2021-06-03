@@ -14,6 +14,7 @@ public class GameScript : MonoBehaviour
     public MapGrid map;
 
     public RunnerBrain runner;
+    public RangerBrain ranger;
 
     public GunPickup gunPickupPrefab;
 
@@ -63,6 +64,11 @@ public class GameScript : MonoBehaviour
                 //runner.CreateRule(runner.dropRule);
                 SpawnGunsAroundRoom(center, radius);
                 break;
+
+            case 3:
+                runner.SpawnRangedMinions(2);
+                break;
+
         }
     }
 

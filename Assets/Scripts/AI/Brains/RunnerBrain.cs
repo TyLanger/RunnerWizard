@@ -37,6 +37,7 @@ public class RunnerBrain : Brain
     public Brain chaserPrefab;
     int numMinions = 2;
     float minionSpacing = 5;
+    public Brain rangerPrefab;
 
     public float distBehindMinion = 15;
 
@@ -60,8 +61,8 @@ public class RunnerBrain : Brain
         spawnPos = transform.position;
         //stateMachine.SetState(new CreateRoom(this));
 
-        CreateRule(ruleToSpawn);
-        CreateRule(dropRule);
+        //CreateRule(ruleToSpawn);
+        //CreateRule(dropRule);
 
     }
 
@@ -70,26 +71,7 @@ public class RunnerBrain : Brain
         base.Update();
         if (!dead)
         {
-            if (minions.Count > 0)
-            {
-                //stateMachine.SetState(new HideBehindMinion(this));
-            }
-            /*
-            else
-            {
 
-                if (Vector3.Distance(player.position, transform.position) < playerRadius && CanSeePlayer())
-                {
-
-                    stateMachine.SetState(new EscapePlayer(this));
-
-                }
-                else
-                {
-                    stateMachine.SetState(new Idle(this));
-                }
-            }
-            */
         }
     }
 
@@ -158,6 +140,25 @@ public class RunnerBrain : Brain
         }
 
         stateMachine.SetState(new HideBehindMinion(this));
+    }
+
+    public void SpawnRangedMinions(int num)
+    {
+        Vector3 playerToMeDir = transform.position - player.position;
+        Vector3 perpLine = new Vector3(-playerToMeDir.z, transform.position.y, playerToMeDir.x).normalized;
+        Vector3 behindPoint = transform.position + playerToMeDir.normalized * 10;
+
+        for (int i = 0; i < num; i++)
+        {
+            Brain copy = Instantiate(rangerPrefab, behindPoint + perpLine * (i - (num / 2)) * minionSpacing, Quaternion.identity);
+            copy.player = player;
+            Health h = copy.GetComponent<Health>();
+            if(h)
+            {
+                h.OnDeath += MinionDeath;
+            }
+            minions.Add(copy.transform);
+        }
     }
 
     public void SpawnRoom()
@@ -238,38 +239,6 @@ public class RunnerBrain : Brain
 
     public Vector3 GetNewQuadrant()
     {
-        /*
-        // use my position to figure out my quad
-        // split the map into 4 quads.
-        // tunnel to another one
-
-        Vector3 mapCenter = map.transform.position;
-        Vector3 mapCenterDir = mapCenter - transform.position;
-
-        // if mapCenterDir.x < 0, on the right
-        // if mapCenterDir.z < 0, on the top
-
-        bool right = mapCenterDir.x < 0;
-        bool top = mapCenterDir.z < 0;
-
-        // could have done evens, swap right, else swap top
-        // this is probably clearer
-        switch(quadsVisited)
-        {
-            case 0:
-                right = !right; // bottom right to bottom left
-                break;
-
-            case 1:
-                top = !top; // bottom left tot top left
-                break;
-
-            case 2:
-                right = !right; // top left to top right
-                break;
-
-        }
-        */
 
         // just going in order now
         quadsVisited++;

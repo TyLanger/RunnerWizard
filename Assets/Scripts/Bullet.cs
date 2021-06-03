@@ -9,6 +9,7 @@ public class Bullet : MonoBehaviour
 
     public float moveSpeed = 10;
     public int damage = 1;
+    public bool onlyHitPlayer = false;
 
     public float lifetime = 10;
 
@@ -48,6 +49,14 @@ public class Bullet : MonoBehaviour
     {
         if (!inCleanup)
         {
+            if (onlyHitPlayer)
+            {
+                PlayerInput p = other.GetComponent<PlayerInput>();
+                if (p == null)
+                    return;
+            }
+
+
             Health h = other.gameObject.GetComponent<Health>();
             if (h != null)
             {
