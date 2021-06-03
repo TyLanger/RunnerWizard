@@ -4,14 +4,16 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(Motor))]
-public class PlayerInput : MonoBehaviour
+public class PlayerInput : MonoBehaviour, IDroppable
 {
 
     Vector3 moveInput;
     Motor motor;
 
+    public Gun handGun;
     public Gun gun;
     bool hasGun = false;
+    int gunType;
     public Transform hand;
 
     public GunPickup gunPickupPrefab;
@@ -47,8 +49,14 @@ public class PlayerInput : MonoBehaviour
         }
         if(Input.GetButton("Fire1"))
         {
-            if(hasGun)
+            if (hasGun)
+            {
                 gun.Fire();
+            }
+            else
+            {
+                handGun.Fire();
+            }
         }
         if (Input.GetButtonDown("Fire2"))
         {
@@ -59,27 +67,45 @@ public class PlayerInput : MonoBehaviour
         {
             if(hasGun)
                 gun.Reload();
+            handGun.Reload();
         }
     }
 
-    public void GiveGun(Gun newGun)
+    /// <summary>
+    /// Gives a gun. Returns false if already has a gun
+    /// </summary>
+    /// <param name="newGun"></param>
+    /// <param name="gunType"></param>
+    /// <returns></returns>
+    public bool GiveGun(Gun newGun, int gunType)
     {
-        gun = Instantiate(newGun, hand.position, hand.rotation, hand);
-        hasGun = true;
+        if (!hasGun)
+        {
+            gun = Instantiate(newGun, hand.position, hand.rotation, hand);
+            this.gunType = gunType;
+            hasGun = true;
+            return true;
+        }
+        return false;
     }
 
     public void DropGun()
     {
-        hasGun = false;
-        GunPickup copy = Instantiate(gunPickupPrefab, transform.position + Vector3.back * 2, transform.rotation);
-        // prefab already has a gun
-        // if I give them mine, it messes up when I delete mine
-        // I wanted to do it this way so it can work if I have different guns
-        // maybe I'll have to do
-        //copy.gunType = gun.type
-        // and then the prefab has all possible guns
+        if (hasGun)
+        {
+            hasGun = false;
+            GunPickup copy = Instantiate(gunPickupPrefab, transform.position + Vector3.back * 2, transform.rotation);
+            // prefab already has a gun
+            // if I give them mine, it messes up when I delete mine
+            // I wanted to do it this way so it can work if I have different guns
+            // maybe I'll have to do
+            //copy.gunType = gun.type
+            // and then the prefab has all possible guns
 
-        //copy.gun = gun; 
-        Destroy(gun.gameObject);
+            copy.SetGun(gunType);
+
+            //copy.gun = gun; 
+            Destroy(gun.gameObject);
+        }
     }
 }

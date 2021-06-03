@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using System;
 
 public class RunnerBrain : Brain
 {
@@ -22,7 +23,7 @@ public class RunnerBrain : Brain
     // cower
     // break time
 
-
+    public event Action<Vector3, float, int> OnRoomCreated;
 
     Vector3 spawnPos;
 
@@ -46,6 +47,7 @@ public class RunnerBrain : Brain
     public Rule ruleToSpawn;
     public ChainController chain;
     public Rule blockerRule;
+    public Rule dropRule;
 
     // Start is called before the first frame update
     protected override void Awake()
@@ -59,6 +61,8 @@ public class RunnerBrain : Brain
         //stateMachine.SetState(new CreateRoom(this));
 
         CreateRule(ruleToSpawn);
+        CreateRule(dropRule);
+
     }
 
     protected override void Update()
@@ -169,6 +173,7 @@ public class RunnerBrain : Brain
         recentRoomCenter = transform.position;
         recentRoomRadius = radius;
 
+        OnRoomCreated?.Invoke(recentRoomCenter, recentRoomRadius, quadsVisited);
     }
 
     public void SetupStartRoom(Vector3 center, float radius)

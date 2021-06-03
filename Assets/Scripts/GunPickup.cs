@@ -5,15 +5,22 @@ using UnityEngine;
 public class GunPickup : MonoBehaviour
 {
 
-    public Gun gun;
+    public Gun[] guns;
+
+    public int gunType = 0;
 
     private void OnTriggerEnter(Collider other)
     {
         PlayerInput player = other.GetComponent<PlayerInput>();
         if(player)
         {
-            player.GiveGun(gun);
-            Destroy(gameObject);
+            if(player.GiveGun(guns[gunType], gunType));
+                Destroy(gameObject);
         }
+    }
+
+    public void SetGun(int gunType)
+    {
+        this.gunType = gunType;
     }
 }

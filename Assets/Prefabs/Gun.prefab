@@ -5030,6 +5030,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bullet: {fileID: 1482256356604051372, guid: bc53e389274c46c47a01bf89137c7292, type: 3}
+  clipSize: 30
   timeBetweenShots: 0.1
   muzzlePoint: {fileID: 9165858718747211200}
   muzzleFlashParticles: {fileID: 0}

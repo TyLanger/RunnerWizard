@@ -7,11 +7,11 @@ public class Gun : MonoBehaviour
     public event System.Action<Vector3> OnBulletEnded;
 
     public Bullet bullet;
-    int clipSize = 30;
-    int currentBullets = 0;
+    public int clipSize = 30;
+    protected int currentBullets = 0;
 
     public float timeBetweenShots = 0.1f;
-    float timeOfNextShot = 0;
+    protected float timeOfNextShot = 0;
 
     bool currentlyReloading = false;
     float reloadTime = 1;
@@ -33,7 +33,7 @@ public class Gun : MonoBehaviour
         
     }
 
-    public void Fire()
+    public virtual void Fire()
     {
         if(CanFire())
         {
@@ -49,7 +49,7 @@ public class Gun : MonoBehaviour
         }
     }
 
-    bool CanFire()
+    protected bool CanFire()
     {
         return Time.time > timeOfNextShot && currentBullets > 0 && !currentlyReloading;
     }
