@@ -27,6 +27,7 @@ public class RunnerBrain : Brain
     public event Action<int> OnRunnerDeath;
 
     Vector3 spawnPos;
+    public Vector3 centerDebug;
 
     float playerRadius = 7; // how far you want to be away from the player
 
@@ -52,6 +53,8 @@ public class RunnerBrain : Brain
     public Rule dropRule;
     public Rule cantShootRule;
     public Rule healRule;
+
+    public ExpandingSphere spell;
 
     // Start is called before the first frame update
     protected override void Awake()
@@ -204,11 +207,18 @@ public class RunnerBrain : Brain
 
     IEnumerator CarveRoom()
     {
+        ExpandingSphere es = Instantiate(spell, transform.position, transform.rotation);
+        es.Setup(roomRadius * map.spacing * 2);
+
+        // wait a bit for the spell to expand before digging the room
+        yield return null;
+        yield return null;
         yield return null;
         map.MoveCircle(transform.position, roomRadius, false);
         recentRoomCenter = transform.position;
         recentRoomRadius = roomRadius;
 
+        yield return null;
         OnRoomCreated?.Invoke(recentRoomCenter, recentRoomRadius, quadsVisited);
     }
 
@@ -280,15 +290,20 @@ public class RunnerBrain : Brain
 
     public Vector3 GetNewQuadrant()
     {
-
         // just going in order now
         quadsVisited++;
 
-
         Vector3 centerOfNewQuad = map.GetQuadrantCenter(quadsVisited);
+        // Fix 1:
         // if the center block is already down,
         // the center will be underground. This fixs that
-        centerOfNewQuad = new Vector3(centerOfNewQuad.x, transform.position.y, centerOfNewQuad.z);
+        // Fix 2:
+        // tranform.pos.y --> 0.58
+        // sometimes the runner can be pushed lower
+        // then the center will be at y = 0
+        // and the runner can run right over it without getting close enough to trigger
+        centerOfNewQuad = new Vector3(centerOfNewQuad.x, 0.58f, centerOfNewQuad.z);
+        //centerDebug = centerOfNewQuad;
         return centerOfNewQuad;
     }
 

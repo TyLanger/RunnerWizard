@@ -10739,6 +10739,7 @@ MonoBehaviour:
   dropRule: {fileID: 8067980552393704491, guid: e0a6375b2ba1ce14ea7c83af22b9ff44, type: 3}
   cantShootRule: {fileID: 7108352925314783263, guid: cece37de1a3774f469e5e64d07ebbd93, type: 3}
   healRule: {fileID: -8670577548927205498, guid: f5c03c187873d4743a2aeb3890a31323, type: 3}
+  spell: {fileID: 5599035236635352552, guid: be15ef9b923f40e4bbda8d089b080385, type: 3}
 --- !u!114 &1676176544
 MonoBehaviour:
   m_ObjectHideFlags: 0
