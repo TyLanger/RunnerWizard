@@ -123,6 +123,8 @@ public class GameScript : MonoBehaviour
                 // if I don't spawn at least 1 enemy, the runner won't swap to digTunnel automatically
                 runner.stateMachine.SetState(new WandBroken(runner, center, radius));
                 WandBrokenEvent();
+                // make smaller for the ladder room
+                runner.roomRadius -= 3;
                 break;
             case 8:
                 break;
@@ -316,8 +318,8 @@ public class GameScript : MonoBehaviour
     IEnumerator EndSequence()
     {
         string messge0 = "And the knight and kobold wizard put their differences aside and left the cave together.";
-        string message1 = "In the end, they weren't really enemies; just both victims of their circumstances.";
-        string message2 = "Turns out the real enemy was cursed wands and golems and the real treasure was the friends made along the way.";
+        string message1 = "In the end, they weren't really enemies; just victims of their circumstances.";
+        string message2 = "Turns out the real enemy was cursed wands, golems, and rules and the real treasure was the friends made along the way.";
         Chat(messge0);
         Chat(message1);
         Chat(message2);
@@ -341,7 +343,7 @@ public class GameScript : MonoBehaviour
 
     public void BreakTime()
     {
-        string message = "It seems the little guy got tuckered out and need a break.";
+        string message = "It seems the little guy got tuckered out and needed a break.";
         string message2 = "Nice of him to make this little fire and invite me to sit with him.";
         Chat(message);
         Chat(message2);
