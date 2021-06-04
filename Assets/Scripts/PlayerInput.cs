@@ -63,6 +63,7 @@ public class PlayerInput : MonoBehaviour, IDroppable, ICantShoot
         if (Input.GetButtonDown("Jump"))
         {
             //FindObjectOfType<MapGrid>().MoveCircle(transform.position, 1.5f, true);
+            //Debug.Break();
         }
         if(Input.GetButton("Fire1"))
         {
