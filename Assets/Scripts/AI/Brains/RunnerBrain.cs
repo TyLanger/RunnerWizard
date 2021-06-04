@@ -29,7 +29,7 @@ public class RunnerBrain : Brain
     Vector3 spawnPos;
     public Vector3 centerDebug;
 
-    float playerRadius = 7; // how far you want to be away from the player
+    //float playerRadius = 7; // how far you want to be away from the player
 
     MapGrid map;
     Vector3 recentRoomCenter;
@@ -37,7 +37,7 @@ public class RunnerBrain : Brain
     public float roomRadius = 5.5f;
 
     public Brain chaserPrefab;
-    int numMinions = 2;
+    //int numMinions = 2;
     float minionSpacing = 5;
     public Brain rangerPrefab;
 
@@ -98,7 +98,7 @@ public class RunnerBrain : Brain
     {
         // pick a rule
         // spawn it behind me
-        Rule copy = Instantiate(rule, anchor.position + anchor.forward * -2f, anchor.rotation);
+        Rule copy = Instantiate(rule, anchor.position + anchor.forward * -2f, Quaternion.identity);
         ChainController chainCopy = Instantiate(chain, anchor.position + -1*anchor.forward, anchor.rotation);
         copy.radius *= radiusMultiplier;
         chainCopy.SetTargets(anchor, copy.transform);
@@ -109,7 +109,7 @@ public class RunnerBrain : Brain
     public void CreateRule(Rule rule, Vector3 anchorA, Vector3 anchorB, int chainHp = 3)
     {
         Vector3 center = (anchorA + anchorB) / 2;
-        Rule copy = Instantiate(rule, center, transform.rotation);
+        Rule copy = Instantiate(rule, center, Quaternion.identity);
         ChainController chainCopy = Instantiate(chain, center, transform.rotation);
 
         chainCopy.SetPoints(anchorA, anchorB);

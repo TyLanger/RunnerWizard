@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameScript : MonoBehaviour
@@ -22,13 +23,26 @@ public class GameScript : MonoBehaviour
 
     CameraFollow cam;
 
+    // Tutorial
+    int triggersTouched = 0;
+    public Transform wandTrans;
+    public Transform gunSpawn;
+    bool gunPickedUp = false;
+    public PlayerInput player;
+    bool wandStolen = false;
+
+    public Transform chatBox;
+    public TextMeshProUGUI chatPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
         cam = FindObjectOfType<CameraFollow>();
 
         StartCoroutine(DigStartingRooms());
-        Invoke("StartRunner", 3);
+        //Invoke("StartRunner", 3);
+
+        StartCoroutine(StartTutorial());
 
         runner.OnRoomCreated += RoomCreated;
     }
@@ -44,6 +58,7 @@ public class GameScript : MonoBehaviour
         yield return null;
         map.MoveCircle(startRoomPos, startRoomRadius, false);
         map.MoveCircle(endRoomPos, endRoomRadius, false);
+        map.MoveCircle(runner.transform.position, 1, false);
         runner.SetupStartRoom(startRoomPos, startRoomRadius);
     }
 
@@ -64,6 +79,9 @@ public class GameScript : MonoBehaviour
 
         switch(roomNumber)
         {
+            case 0:
+                runner.SpawnMinions(1);
+                break;
             case 1:
                 runner.SpawnMinions(3);
                 break;
@@ -137,5 +155,130 @@ public class GameScript : MonoBehaviour
             cam.AddShake(0.2f);
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    public void TriggerTouched()
+    {
+        triggersTouched++;
+    }
+
+    public void GunPickedUp()
+    {
+        gunPickedUp = true;
+    }
+
+    public void WandStolen()
+    {
+        wandStolen = true;
+    }
+
+    IEnumerator DestroyChat(TextMeshProUGUI chatToDestroy)
+    {
+        //Debug.Log("DEstroy thing");
+        yield return new WaitForSeconds(6);
+        for (int i = 0; i < 15; i++)
+        {
+            chatToDestroy.color += new Color(-0.05f, -0.05f, -0.05f, 0);
+            yield return new WaitForSeconds(0.5f);
+        }
+        //Debug.Log("DEstroy thing 10s");
+
+        Destroy(chatToDestroy.gameObject);
+    }
+
+    void Chat(string message)
+    {
+        TextMeshProUGUI chat0 = Instantiate(chatPrefab, chatBox);
+        chat0.text = message;
+        StartCoroutine(DestroyChat(chat0));
+    }
+
+    IEnumerator StartTutorial()
+    {
+        yield return null;
+        // what is the tutorial?
+        // Walk around the plinth to check for traps
+        // 4 colliders I need to touch
+
+        string message0 = "Ah I fell into this cave and now I'm stuck.";
+        string message1 = "Look at that cool wand on the plinth. I had better walk around it once and check for traps";
+        string message2 = "Walk around the plinth. Look where you're going and keep going in the same direction to build up speed";
+        //Debug.Log(message0);
+        //Debug.Log(message1);
+        //Debug.Log(message2);
+
+        Chat(message0);
+        Chat(message1);
+        Chat(message2);
+
+
+        while (triggersTouched < 4)
+        {
+            yield return null;
+        }
+        GunPickup p = Instantiate(gunPickupPrefab, gunSpawn.position, gunSpawn.rotation);
+        p.OnGunPickedUp += GunPickedUp;
+        p.SetGun(0);
+
+        string message3 = "Oh that's where my gun went. I'd better go pick it up.";
+        string message4 = "Walk over the gun to pick it up";
+        //Debug.Log(message3);
+        //Debug.Log(message4);
+
+        Chat(message3);
+        Chat(message4);
+
+        // go pick up a gun
+        while (!gunPickedUp)
+        {
+            yield return null;
+        }
+
+        string message5 = "Let's see if it still works.";
+        string message6 = "Left click to shoot. R to reload. Right click or Q to drop it again";
+        //Debug.Log(message5);
+        //Debug.Log(message6);
+        Chat(message5);
+        Chat(message6);
+
+        // give the player some time to play with the gun.
+        // I don't really want to check to see if they press all the buttons
+        // Hopefully they don't drop the gun and forget about it and use the handgun
+        yield return new WaitForSeconds(6);
+        map.MoveCircle(runner.transform.position, 2.5f, false);
+        yield return new WaitForSeconds(2);
+        // runner comes and steals the wand?
+        // map.move a tunnel for the runner
+        // runner.digTunnel room 0 (this room)
+
+        string message7 = "What is that? Is that a kobold? A kobold wizard? Did he fall into here with me?";
+        string message8 = "He just went and stole the wand! Without even checking for traps!";
+
+        player.CanMove(false);
+        StealWand state = new StealWand(runner, wandTrans.position);
+        state.OnWandStolen += WandStolen;
+        runner.stateMachine.SetState(state);
+        //Debug.Log(message7);
+        Chat(message7);
+
+        // camera follow the runner?
+        // what if the player is in the way?
+        while (!wandStolen)
+        {
+            yield return null;
+        }
+        wandTrans.gameObject.SetActive(false);
+        //Debug.Log(message8);
+        Chat(message8);
+
+        player.CanMove(true);
+
+        // spawn 1 enemy (legs are broken?)
+        // run away digTunnel
+        // have to shoot the chain in the forcefield to advance
+        string message9 = "That wand can animate golems? Uh oh.";
+        //Debug.Log(message9);
+        Chat(message9);
+
     }
 }

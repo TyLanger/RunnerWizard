@@ -8,11 +8,11 @@ public class ExpandingSphere : MonoBehaviour
     float maxRadius = 50;
     public float expansionSpeed = 5;
 
-    AudioSource audio;
+    AudioSource audioSource;
 
     private void Awake()
     {
-        audio = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -21,7 +21,7 @@ public class ExpandingSphere : MonoBehaviour
         
         if(currentRadius > maxRadius)
         {
-            if (!audio.isPlaying)
+            if (!audioSource.isPlaying)
             {
                 // only destroy when the audio finishes
                 // the timing is pretty close anyway

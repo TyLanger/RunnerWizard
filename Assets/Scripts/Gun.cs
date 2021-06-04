@@ -20,13 +20,13 @@ public class Gun : MonoBehaviour
 
     public ParticleSystem muzzleFlashParticles;
 
-    AudioSource audio;
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
     {
         muzzleFlashParticles = GetComponentInChildren<ParticleSystem>();
-        audio = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
         // not fun to pick up a gun and not start shooting
         //Reload();
         currentBullets = clipSize;
@@ -57,9 +57,9 @@ public class Gun : MonoBehaviour
 
     protected void PlayGunshot()
     {
-        if (audio)
+        if (audioSource)
         {
-            audio.Play();
+            audioSource.Play();
         }
     }
 

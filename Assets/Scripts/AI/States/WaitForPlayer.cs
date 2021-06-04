@@ -5,9 +5,9 @@ using UnityEngine;
 public class WaitForPlayer : IState
 {
     Brain myBrain;
-    float timeSpentWaiting;
+    //float timeSpentWaiting;
     // go looking for the player after this?
-    float maxTimeToWait = 30;
+    //float maxTimeToWait = 30;
 
     float playerNearDistance = 15;
 
@@ -18,7 +18,7 @@ public class WaitForPlayer : IState
 
     public void OnEnter()
     {
-        timeSpentWaiting = 0;
+        //timeSpentWaiting = 0;
     }
 
     public void OnExit()
@@ -28,7 +28,7 @@ public class WaitForPlayer : IState
 
     public void Tick()
     {
-        timeSpentWaiting += Time.deltaTime;
+        //timeSpentWaiting += Time.deltaTime;
         if(Vector3.Distance(myBrain.transform.position, myBrain.player.position) < playerNearDistance)
         {
             // player found us

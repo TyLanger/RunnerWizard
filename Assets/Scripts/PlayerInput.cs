@@ -22,13 +22,13 @@ public class PlayerInput : MonoBehaviour, IDroppable, ICantShoot
 
     Camera mainCam;
 
-    AudioSource audio;
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Awake()
     {
         motor = GetComponent<Motor>();
-        audio = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
         mainCam = Camera.main;
     }
 
@@ -74,8 +74,8 @@ public class PlayerInput : MonoBehaviour, IDroppable, ICantShoot
                     // and don't need to swap audio clips around
                     if (gun.ShouldPlayClick())
                     {
-                        if(!audio.isPlaying)
-                            audio.Play();
+                        if(!audioSource.isPlaying)
+                            audioSource.Play();
                     }                        
                     gun.Fire();
                     

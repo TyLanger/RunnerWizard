@@ -16,6 +16,10 @@ public class ChainController : MonoBehaviour
     Vector3 anchorPointA;
     Vector3 anchorPointB;
 
+    public SpriteRenderer spriteRenderer;
+    //public SpriteRenderer spriteRenderer2;
+
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -23,6 +27,8 @@ public class ChainController : MonoBehaviour
         anchorPointA = transform.position + Vector3.forward * 0.5f;
 
         anchorPointB = transform.position + -Vector3.forward * 0.5f;
+
+        //spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         Health h = GetComponent<Health>();
         if (h)
@@ -48,7 +54,12 @@ public class ChainController : MonoBehaviour
         transform.forward = (anchorPointA - anchorPointB).normalized;
         //transform.up = Vector3.up;
 
-        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, Vector3.Distance(anchorPointA, anchorPointB));
+        float dist = Vector3.Distance(anchorPointA, anchorPointB);
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, dist);
+        spriteRenderer.size = new Vector2(Mathf.Max(1, dist-2), 1);
+        // second renderer just draws behind. they don;t intersect
+        //spriteRenderer2.size = new Vector2(Mathf.Max(1, dist - 3), 1);
+
     }
 
     public void SetTargets(Transform targetA, Transform targetB)

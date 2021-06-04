@@ -22,6 +22,8 @@ public class DigTunnel : IState
     float timeToTele = 7;
     bool reachedBreachPoint = false;
 
+    bool withinRangeOfCenter = false;
+
     public DigTunnel(Brain brain)
     {
         myBrain = brain;
@@ -130,6 +132,13 @@ public class DigTunnel : IState
         if (Vector3.Distance(destination, centerOfNewQuad) < bulletRange)
         {
             //Debug.Log("Aim right at the center");
+            if(withinRangeOfCenter)
+            {
+                // if you get here again, you're stuck and going back and forth
+                StuckAtEnd();
+                return centerOfNewQuad;
+            }
+            withinRangeOfCenter = true;
             return centerOfNewQuad;
         }
 
@@ -161,5 +170,14 @@ public class DigTunnel : IState
         }
 
         return aimPoint;
+    }
+
+    void StuckAtEnd()
+    {
+        // 0.58 is the height of the runner
+        Debug.Log("Runner was stuck");
+        myBrain.Tele(new Vector3(centerOfNewQuad.x, 0.58f, centerOfNewQuad.z));
+        myBrain.stateMachine.SetState(new WaitForPlayer(myBrain));
+
     }
 }
