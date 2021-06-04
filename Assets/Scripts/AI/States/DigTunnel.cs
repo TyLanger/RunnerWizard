@@ -49,6 +49,7 @@ public class DigTunnel : IState
 
                 // create a block so the player can't follow so quickly
                 Vector3 toCenterDir = (lookPoint - breachPoint).normalized;
+                toCenterDir = new Vector3(toCenterDir.x, 0, toCenterDir.z);
                 // *2 put the block a bit into where the tunnel will be
                 b.CreateBlockRule(breachPoint + toCenterDir * 10, toCenterDir);
 

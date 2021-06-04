@@ -121,6 +121,10 @@ public class RunnerBrain : Brain
 
     public void CreateBlockRule(Vector3 spawnPoint, Vector3 forward)
     {
+        if(spawnPoint.y < 0.5f)
+        {
+            spawnPoint = new Vector3(spawnPoint.x, 0.5f, spawnPoint.z);
+        }
         Rule r = Instantiate(blockerRule, spawnPoint, Quaternion.identity);
         ChainController chainCopy = Instantiate(chain, spawnPoint, transform.rotation);
 
@@ -207,8 +211,7 @@ public class RunnerBrain : Brain
 
     IEnumerator CarveRoom()
     {
-        ExpandingSphere es = Instantiate(spell, transform.position, transform.rotation);
-        es.Setup(roomRadius * map.spacing * 2);
+        CastSpellEffect();
 
         // wait a bit for the spell to expand before digging the room
         yield return null;
@@ -220,6 +223,12 @@ public class RunnerBrain : Brain
 
         yield return null;
         OnRoomCreated?.Invoke(recentRoomCenter, recentRoomRadius, quadsVisited);
+    }
+
+    public void CastSpellEffect()
+    {
+        ExpandingSphere es = Instantiate(spell, transform.position, transform.rotation);
+        es.Setup(roomRadius * map.spacing * 2);
     }
 
     public void SetupStartRoom(Vector3 center, float radius)

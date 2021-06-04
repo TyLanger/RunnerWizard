@@ -50,6 +50,7 @@ public class WandBroken : IState
     void Shoot()
     {
         myBrain.Shoot();
+        myBrain.CastSpellEffect();
 
         shotsFired++;
 
