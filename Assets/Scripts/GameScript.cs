@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameScript : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class GameScript : MonoBehaviour
 
     public Rule[] rules;
 
-    CameraFollow cam;
+    public CameraFollow cam;
 
     // Tutorial
     int triggersTouched = 0;
@@ -34,10 +35,14 @@ public class GameScript : MonoBehaviour
     public Transform chatBox;
     public TextMeshProUGUI chatPrefab;
 
+    public Image blackout;
+
     // Start is called before the first frame update
     void Start()
     {
-        cam = FindObjectOfType<CameraFollow>();
+        //cam = FindObjectOfType<CameraFollow>();
+
+        HealRule.OnHealStarted += BreakTime;
 
         StartCoroutine(DigStartingRooms());
         //Invoke("StartRunner", 3);
@@ -50,7 +55,7 @@ public class GameScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     IEnumerator DigStartingRooms()
@@ -77,7 +82,7 @@ public class GameScript : MonoBehaviour
             }
         }
 
-        switch(roomNumber)
+        switch (roomNumber)
         {
             case 0:
                 runner.SpawnMinions(1);
@@ -116,7 +121,8 @@ public class GameScript : MonoBehaviour
             case 7:
                 StartCoroutine(PeriodicScreenShake());
                 // if I don't spawn at least 1 enemy, the runner won't swap to digTunnel automatically
-                runner.stateMachine.SetState(new DigTunnel(runner));
+                runner.stateMachine.SetState(new WandBroken(runner, center, radius));
+                WandBrokenEvent();
                 break;
             case 8:
                 break;
@@ -145,15 +151,24 @@ public class GameScript : MonoBehaviour
         p.SetGun(r);
     }
 
+    void WandBrokenEvent()
+    {
+        string message = "Did the wand just break? This can't be good";
+        Chat(message);
+    }
+
     IEnumerator PeriodicScreenShake()
     {
-        while(true)
+        Debug.Log("Periodic Screenshake");
+        string message = "Uh oh. That rumbling feels like the whole place is coming down.";
+        Chat(message);
+        while (true)
         {
             // vary it a little
             cam.AddShake(0.5f);
-            yield return new WaitForSeconds(1);
-            cam.AddShake(0.2f);
             yield return new WaitForSeconds(0.5f);
+            cam.AddShake(0.2f);
+            yield return new WaitForSeconds(0.2f);
         }
     }
 
@@ -179,6 +194,7 @@ public class GameScript : MonoBehaviour
         for (int i = 0; i < 15; i++)
         {
             chatToDestroy.color += new Color(-0.05f, -0.05f, -0.05f, 0);
+            //chatToDestroy.color = Color.Lerp(chatToDestroy.color, new Color(0, 0, 0, 1), (float)i / 15);
             yield return new WaitForSeconds(0.5f);
         }
         //Debug.Log("DEstroy thing 10s");
@@ -211,6 +227,9 @@ public class GameScript : MonoBehaviour
         Chat(message1);
         Chat(message2);
 
+        yield return new WaitForSeconds(1.1f);
+        cam.AddShake(1f);
+
 
         while (triggersTouched < 4)
         {
@@ -235,7 +254,7 @@ public class GameScript : MonoBehaviour
         }
 
         string message5 = "Let's see if it still works.";
-        string message6 = "Left click to shoot. R to reload. Right click or Q to drop it again";
+        string message6 = "Left click to shoot. R to reload. Right click or Q to drop it again.";
         //Debug.Log(message5);
         //Debug.Log(message6);
         Chat(message5);
@@ -251,7 +270,7 @@ public class GameScript : MonoBehaviour
         // map.move a tunnel for the runner
         // runner.digTunnel room 0 (this room)
 
-        string message7 = "What is that? Is that a kobold? A kobold wizard? Did he fall into here with me?";
+        string message7 = "What is that? Is that a kobold? A kobold wizard? Did he fall down here with me?";
         string message8 = "He just went and stole the wand! Without even checking for traps!";
 
         player.CanMove(false);
@@ -280,5 +299,51 @@ public class GameScript : MonoBehaviour
         //Debug.Log(message9);
         Chat(message9);
 
+        yield return new WaitForSeconds(4);
+        string message10 = "I don't think I can just walk through that forcefield.";
+        string message11 = "But maybe my bullets can get through and break that chain holding that rule there.";
+        Chat(message10);
+        Chat(message11);
+    }
+
+    public void EndTriggerTouched()
+    {
+        // EndGame();
+        StartCoroutine(EndSequence());
+        
+    }
+
+    IEnumerator EndSequence()
+    {
+        string messge0 = "And the knight and kobold wizard put their differences aside and left the cave together.";
+        string message1 = "In the end, they weren't really enemies; just both victims of their circumstances.";
+        string message2 = "Turns out the real enemy was cursed wands and golems and the real treasure was the friends made along the way.";
+        Chat(messge0);
+        Chat(message1);
+        Chat(message2);
+        for (int i = 0; i < 21; i++)
+        {
+            blackout.color += new Color(0, 0, 0, i * 0.05f);
+            yield return new WaitForSeconds(0.4f);
+        }
+        yield return new WaitForSeconds(6);
+        string message3 = "The End";
+        string message4 = "Thanks for playing.";
+        string message5 = "The knight and kobold wizard ended up as great friends and went on many adventures together.";
+        Chat(message3);
+        yield return new WaitForSeconds(3);
+        Chat(message4);
+        yield return new WaitForSeconds(3);
+        Chat(message5);
+        yield return new WaitForSeconds(3);
+
+    }
+
+    public void BreakTime()
+    {
+        string message = "It seems the little guy got tuckered out and need a break.";
+        string message2 = "Nice of him to make this little fire and invite me to sit with him.";
+        Chat(message);
+        Chat(message2);
     }
 }

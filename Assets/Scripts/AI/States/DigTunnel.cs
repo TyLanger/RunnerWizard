@@ -50,7 +50,7 @@ public class DigTunnel : IState
                 // create a block so the player can't follow so quickly
                 Vector3 toCenterDir = (lookPoint - breachPoint).normalized;
                 // *2 put the block a bit into where the tunnel will be
-                b.CreateBlockRule(breachPoint + toCenterDir * 5, toCenterDir);
+                b.CreateBlockRule(breachPoint + toCenterDir * 10, toCenterDir);
 
                 //myBrain.gun.OnBulletEnded += BulletEnded;
                 Bullet bullet = myBrain.gun.bullet;

@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class HealRule : Rule
 {
+    public static event System.Action OnHealStarted;
+
+    public void Start()
+    {
+        OnHealStarted?.Invoke();
+        
+    }
+
     private void OnTriggerStay(Collider other)
     {
         IHealable h = other.GetComponent<IHealable>();

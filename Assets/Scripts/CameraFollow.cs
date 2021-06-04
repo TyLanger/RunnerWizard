@@ -17,16 +17,11 @@ public class CameraFollow : MonoBehaviour
     public float traumaDecay = 0.01f;
     public float maxShake = 0.4f;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vector3 shakeOffset = new Vector3(maxShake * Ease.Cube(trauma) * Random.Range(-1, 1), 0, maxShake * Ease.Cube(trauma) * Random.Range(-1, 1));
+        Vector3 shakeOffset = new Vector3(maxShake * Ease.Cube(trauma) * Random.Range(-1, 2), maxShake * Ease.Cube(trauma) * Random.Range(-1, 2), 0);
         transform.position = Vector3.Lerp(transform.position, player.position + offset, Time.fixedDeltaTime * speed)  +shakeOffset;
         
         AddShake(-traumaDecay);

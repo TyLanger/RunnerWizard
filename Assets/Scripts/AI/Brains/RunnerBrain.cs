@@ -121,7 +121,7 @@ public class RunnerBrain : Brain
 
     public void CreateBlockRule(Vector3 spawnPoint, Vector3 forward)
     {
-        Rule r = Instantiate(blockerRule, spawnPoint, transform.rotation);
+        Rule r = Instantiate(blockerRule, spawnPoint, Quaternion.identity);
         ChainController chainCopy = Instantiate(chain, spawnPoint, transform.rotation);
 
         r.transform.localScale = Vector3.one * 20;

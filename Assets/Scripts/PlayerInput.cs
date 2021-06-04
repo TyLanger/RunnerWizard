@@ -20,6 +20,7 @@ public class PlayerInput : MonoBehaviour, IDroppable, ICantShoot
 
     public GunPickup gunPickupPrefab;
 
+
     Camera mainCam;
 
     AudioSource audioSource;
@@ -55,7 +56,8 @@ public class PlayerInput : MonoBehaviour, IDroppable, ICantShoot
         if (eyePlane.Raycast(CameraRay, out float cameraDist))
         {
             Vector3 lookPoint = CameraRay.GetPoint(cameraDist);
-            motor.SetLookAt(new Vector3(lookPoint.x, transform.position.y, lookPoint.z));
+            Vector3 eyeLookPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
+            motor.SetLookAt(eyeLookPoint);
         }
 
         if (Input.GetButtonDown("Jump"))

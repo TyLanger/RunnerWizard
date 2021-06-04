@@ -20,7 +20,8 @@ public class RadiusIndicator : MonoBehaviour
     {
         line = gameObject.GetComponent<LineRenderer>();
 
-        line.SetVertexCount(segments + 1);
+        line.positionCount = segments + 1;
+        //line.SetVertexCount(segments + 1);
         line.useWorldSpace = false;
         CreatePoints();
     }
