@@ -20,11 +20,16 @@ public class Gun : MonoBehaviour
 
     public ParticleSystem muzzleFlashParticles;
 
+    AudioSource audio;
+
     // Start is called before the first frame update
     void Start()
     {
         muzzleFlashParticles = GetComponentInChildren<ParticleSystem>();
-        Reload();
+        audio = GetComponent<AudioSource>();
+        // not fun to pick up a gun and not start shooting
+        //Reload();
+        currentBullets = clipSize;
     }
 
     // Update is called once per frame
@@ -41,6 +46,7 @@ public class Gun : MonoBehaviour
             currentBullets--;
             Bullet copy = Instantiate(bullet, muzzlePoint.position, transform.rotation);
             copy.OnEnd += BulletEnded;
+            PlayGunshot();
             if(muzzleFlashParticles)
             {
                 muzzleFlashParticles.Play();
@@ -49,9 +55,24 @@ public class Gun : MonoBehaviour
         }
     }
 
+    protected void PlayGunshot()
+    {
+        if (audio)
+        {
+            audio.Play();
+        }
+    }
+
     protected bool CanFire()
     {
         return Time.time > timeOfNextShot && currentBullets > 0 && !currentlyReloading;
+    }
+
+    public bool ShouldPlayClick()
+    {
+        bool hasBullets = currentBullets > 0;
+
+        return !hasBullets && !currentlyReloading;
     }
 
     public void Reload()

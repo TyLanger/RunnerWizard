@@ -18,10 +18,11 @@ public class ChaserBrain : Brain
     public float backToRestTime = 1;
     bool smashing = false;
 
-
+    AudioSource audio;
     protected override void Awake()
     {
         base.Awake();
+        audio = GetComponent<AudioSource>();
     }
 
     protected override void Update()
@@ -79,6 +80,7 @@ public class ChaserBrain : Brain
 
         motor.moveSpeed = restSpeed;
         cam.AddShake(0.3f);
+        audio.Play();
         yield return new WaitForSeconds(smashHoldTime);
         weapon.GetComponent<Collider>().enabled = false;
 

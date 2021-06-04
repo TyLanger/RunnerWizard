@@ -9,6 +9,7 @@ public class RangerBrain : Brain, ICantShoot
 
     public void CanShoot(bool able)
     {
+        Debug.Log($"Ranger CanShoot({able})");
         canShoot = able;
     }
 

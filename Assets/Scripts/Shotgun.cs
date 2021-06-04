@@ -17,7 +17,7 @@ public class Shotgun : Gun
             {
                 Instantiate(bullet, muzzlePoints[i].position, muzzlePoints[i].rotation);
             }
-
+            PlayGunshot();
             //copy.OnEnd += BulletEnded;
             if (muzzleFlashParticles)
             {

@@ -189,6 +189,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 15
   currentHealth: 0
+  canRespawn: 0
+  isRunner: 0
   healthBarPrefab: {fileID: 3029004009258727945, guid: 6ff73e5692f612f4eb183202f0d8cbe8, type: 3}
   hpBarOffset: {x: 0, y: 1, z: 0}
 --- !u!1001 &5039853367348617319
@@ -198,6 +200,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5039853365750501983}
     m_Modifications:
+    - target: {fileID: -8512637372817973114, guid: 5bfb7456356ef8f41bbfd2101a4c1d3a, type: 3}
+      propertyPath: m_Volume
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 9165858719891824192, guid: 5bfb7456356ef8f41bbfd2101a4c1d3a, type: 3}
       propertyPath: m_Name
       value: Gun

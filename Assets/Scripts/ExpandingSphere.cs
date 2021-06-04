@@ -5,19 +5,35 @@ using UnityEngine;
 public class ExpandingSphere : MonoBehaviour
 {
     float currentRadius = 1;
-    float maxRadius = 10;
+    float maxRadius = 50;
     public float expansionSpeed = 5;
+
+    AudioSource audio;
+
+    private void Awake()
+    {
+        audio = GetComponent<AudioSource>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        currentRadius += expansionSpeed * Time.deltaTime;
-        transform.localScale = Vector3.one * currentRadius;
+        
         if(currentRadius > maxRadius)
         {
-            Destroy(gameObject);
+            if (!audio.isPlaying)
+            {
+                // only destroy when the audio finishes
+                // the timing is pretty close anyway
+                // it just stops it from clipping and popping
+                Destroy(gameObject);
+            }
+            return; // don't get any bigger
         }
+        currentRadius += expansionSpeed * Time.deltaTime;
+        transform.localScale = Vector3.one * currentRadius;
     }
+
 
     public void Setup(float maxRadius)
     {
