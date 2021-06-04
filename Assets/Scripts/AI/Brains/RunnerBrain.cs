@@ -55,6 +55,7 @@ public class RunnerBrain : Brain
     public Rule healRule;
 
     public ExpandingSphere spell;
+    public GameObject wandVisuals;
 
     // Start is called before the first frame update
     protected override void Awake()
@@ -79,6 +80,11 @@ public class RunnerBrain : Brain
         {
 
         }
+    }
+
+    public void ActivateWand()
+    {
+        wandVisuals.SetActive(true);
     }
 
     public void CreateRule(Rule rule)

@@ -289,6 +289,7 @@ public class GameScript : MonoBehaviour
             yield return null;
         }
         wandTrans.gameObject.SetActive(false);
+        runner.ActivateWand();
         //Debug.Log(message8);
         Chat(message8);
 
